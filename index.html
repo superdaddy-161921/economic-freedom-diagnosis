@@ -4,9 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>경제적 자유 진단</title>
-<meta property="og:title" content="경제적 자유 진단">
-<meta property="og:description" content="나는 경제적 자유에 얼마나 가까운가? 34개의 질문으로 당신의 현재 위치를 진단합니다.">
+<meta property="og:title" content="경제적 자유 진단 — 나는 경제적 자유에 얼마나 가까운가?">
+<meta property="og:description" content="34개 질문으로 인식·지식·경험·학습 4축을 진단합니다. 당신이 '안다고 생각하는 것'과 '실제로 하고 있는 것'의 간극을 발견하세요.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://superdaddy-161921.github.io/economic-freedom-diagnosis/">
+<meta property="og:image" content="https://superdaddy-161921.github.io/economic-freedom-diagnosis/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="성공을 디자인하라">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="경제적 자유 진단">
+<meta name="twitter:description" content="34개 질문으로 당신의 현재 위치를 진단합니다.">
+<meta name="twitter:image" content="https://superdaddy-161921.github.io/economic-freedom-diagnosis/og-image.png">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-KJNV6DHSGC"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -19,9 +28,16 @@
 <style>
 :root {
   --navy: #1B2A4A;
-  --navy-light: #2a3d63;
+  --navy-light: #243656;
   --gold: #C9A96E;
+  --gold-hover: #D4B87A;
+  --gold-bg: rgba(201, 169, 110, 0.08);
   --gold-light: #F5EFE0;
+  --accent-blue: #2B4C7E;
+  --blue-gray: #F0F3F8;
+  --teal: #1A8F6A;
+  --coral: #F0997B;
+  --purple: #AFA9EC;
   --white: #FFFFFF;
   --gray-100: #F8F9FA;
   --gray-300: #DEE2E6;
@@ -29,6 +45,9 @@
   --gray-800: #333333;
   --red-soft: #E74C3C;
   --green-soft: #27AE60;
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.4);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; }
@@ -65,29 +84,33 @@ button { font-family: inherit; }
   padding: 80px 28px 40px;
 }
 .start-top { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-.start-title { font-size: 30px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 24px; }
-.start-hook { font-size: 20px; color: var(--gold); font-weight: 600; margin-bottom: 32px; line-height: 1.4; }
+.start-title { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; }
+.start-title .accent { color: var(--gold); }
+.start-underline { width: 60px; height: 2px; background: var(--gold); margin: 0 auto 24px; }
+.start-hook { font-size: 20px; color: var(--gold); font-weight: 600; margin-bottom: 28px; line-height: 1.4; }
 .start-desc { font-size: 15px; color: #cfd4de; line-height: 1.7; margin-bottom: 40px; }
-.start-brand { font-size: 12px; color: #8a93a8; letter-spacing: 2px; margin-top: 24px; }
+.start-brand { font-size: 12px; color: #8a93a8; letter-spacing: 1px; opacity: 0.5; margin-top: 24px; }
 
 /* CTA Button */
 .cta-button {
   display: block;
   width: 100%;
-  padding: 18px;
+  padding: 16px 24px;
   background: var(--gold);
-  color: var(--white);
+  color: var(--navy);
   border: none;
-  border-radius: 12px;
-  font-size: 18px;
+  border-radius: 8px;
+  font-size: 17px;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.1s ease, filter 0.15s ease;
+  transition: transform 0.1s ease, background 0.15s ease;
   font-family: inherit;
+  letter-spacing: -0.2px;
 }
 .cta-button:active { transform: scale(0.98); }
-.cta-button:hover { filter: brightness(1.05); }
-.cta-button.secondary { background: transparent; color: var(--navy); border: 2px solid var(--gray-300); }
+.cta-button:hover { background: var(--gold-hover); }
+.cta-button.secondary { background: transparent; color: var(--gold); border: 1px solid var(--gold); }
+.cta-button.ghost { background: transparent; color: var(--text-secondary); text-decoration: underline; font-weight: 500; }
 
 /* Question screen */
 .question-screen { background: var(--white); padding-top: 60px; }
@@ -162,27 +185,49 @@ button { font-family: inherit; }
 
 /* Insight break */
 .insight-break {
-  background: linear-gradient(160deg, var(--navy) 0%, #0f1a33 100%);
+  background: linear-gradient(180deg, #1B2A4A 0%, #2B4C7E 50%, #1B2A4A 100%);
   color: var(--white);
   justify-content: center;
   text-align: center;
   padding: 60px 28px 32px;
 }
+.insight-top-line { width: 40px; height: 2px; background: var(--gold); margin: 0 auto 16px; }
+.insight-prelude { font-size: 14px; color: var(--gold); font-style: italic; margin-bottom: 20px; opacity: 0.85; }
 .insight-content { flex: 1; display: flex; flex-direction: column; justify-content: center; }
 .insight-text { font-size: 17px; line-height: 1.8; margin-bottom: 14px; }
 .insight-text .hl { color: var(--gold); font-weight: 700; }
 .insight-text.small { font-size: 15px; color: #cfd4de; }
-.insight-divider { height: 1px; background: rgba(255,255,255,0.15); margin: 24px auto; width: 60px; }
+.insight-divider { height: 1px; background: rgba(201,169,110,0.3); margin: 24px auto; width: 60px; }
 .insight-tail { font-size: 18px; font-weight: 600; color: var(--gold); margin-top: 12px; }
 .insight-chart-wrap { display: flex; justify-content: center; margin: 20px 0; }
 
 /* Result screen */
 .result-screen { padding: 0; background: var(--white); }
 .result-top {
-  background: linear-gradient(160deg, var(--navy) 0%, #0f1a33 100%);
+  background: linear-gradient(135deg, #1B2A4A 0%, #243656 100%);
   color: var(--white);
   padding: 56px 28px 40px;
   text-align: center;
+  position: relative;
+}
+.result-card {
+  background: linear-gradient(135deg, #1B2A4A 0%, #243656 100%);
+  border: 1px solid rgba(201,169,110,0.3);
+  border-radius: 16px;
+  padding: 32px 24px;
+  text-align: center;
+  margin: 0 auto;
+}
+.result-brand-footer { font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 20px; letter-spacing: 1px; }
+.result-stage-badge {
+  display: inline-block;
+  background: var(--gold);
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 16px;
+  border-radius: 20px;
+  margin: 12px 0 24px;
 }
 .result-label { font-size: 13px; color: var(--gold); letter-spacing: 2px; font-weight: 700; margin-bottom: 12px; }
 .result-type-name { font-size: 30px; font-weight: 800; color: var(--gold); margin-bottom: 10px; letter-spacing: -0.5px; line-height: 1.3; }
@@ -198,26 +243,41 @@ button { font-family: inherit; }
   margin-bottom: 24px;
 }
 .result-chart-wrap { display: flex; justify-content: center; margin: 16px 0 20px; }
-.result-gap { font-size: 15px; color: #e0e4ec; line-height: 1.6; margin-top: 16px; }
+.result-gap { font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.6; margin-top: 20px; padding: 12px 14px; background: rgba(201,169,110,0.08); border-radius: 8px; text-align: left; }
 .scroll-hint { margin-top: 28px; font-size: 12px; color: #8a93a8; animation: bounce 1.8s infinite; }
 @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
 
-.result-body { padding: 40px 28px; background: var(--white); }
-.result-desc { font-size: 16px; line-height: 1.8; color: var(--gray-800); margin-bottom: 32px; }
+.result-body { padding: 40px 28px; background: linear-gradient(180deg, #1B2A4A 0%, #243656 100%); color: var(--white); }
+.result-desc { font-size: 16px; line-height: 1.8; color: rgba(255,255,255,0.85); margin-bottom: 32px; }
 
 .lock-box {
-  background: var(--gray-100);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(201,169,110,0.2);
   border-radius: 16px;
   padding: 28px 24px;
   margin-bottom: 24px;
 }
-.lock-title { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 16px; }
-.lock-list { list-style: none; margin-bottom: 24px; }
-.lock-list li { font-size: 14px; color: var(--gray-800); padding: 8px 0; padding-left: 22px; position: relative; }
-.lock-list li::before { content: "✦"; position: absolute; left: 0; color: var(--gold); }
-.lock-prompt { font-size: 14px; color: var(--gray-500); margin-bottom: 20px; line-height: 1.6; }
-.lock-prompt strong { color: var(--navy); }
-.lock-footer { font-size: 12px; color: var(--gray-500); margin-top: 16px; text-align: center; }
+.lock-title { font-size: 15px; font-weight: 700; color: var(--gold); margin-bottom: 16px; }
+.lock-prompt { font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 20px; line-height: 1.6; }
+.lock-prompt strong { color: var(--gold); }
+.lock-footer { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 16px; text-align: center; }
+
+.cta-preview-list { display: flex; flex-direction: column; gap: 12px; margin: 24px 0; }
+.cta-preview-item {
+  background: rgba(201,169,110,0.08);
+  border-left: 3px solid var(--gold);
+  padding: 12px 16px;
+  border-radius: 0 8px 8px 0;
+}
+.cta-preview-title { font-size: 14px; font-weight: 600; color: var(--gold); }
+.cta-preview-desc { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 4px; line-height: 1.5; }
+
+.blur-preview { position: relative; margin: 24px 0; overflow: hidden; border-radius: 12px; }
+.blur-preview-content { filter: blur(6px); -webkit-filter: blur(6px); pointer-events: none; user-select: none; padding: 20px; background: rgba(255,255,255,0.02); }
+.blur-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; background: rgba(27,42,74,0.4); }
+.blur-overlay-inner { text-align: center; }
+.blur-overlay-icon { font-size: 24px; margin-bottom: 8px; }
+.blur-overlay-text { font-size: 14px; color: var(--gold); font-weight: 600; }
 
 /* Unlocked sections */
 .unlocked-section { margin: 32px 0; }
@@ -229,32 +289,46 @@ button { font-family: inherit; }
   font-weight: 700;
   margin-bottom: 20px;
   padding: 8px 0;
-  border-top: 1px solid var(--gray-300);
-  border-bottom: 1px solid var(--gray-300);
+  border-top: 1px solid rgba(201,169,110,0.25);
+  border-bottom: 1px solid rgba(201,169,110,0.25);
+  text-transform: uppercase;
 }
-.need-text { font-size: 16px; line-height: 1.8; color: var(--gray-800); padding: 0 4px; }
-.axis-detail { margin-bottom: 20px; }
+.need-text { font-size: 16px; line-height: 1.8; color: rgba(255,255,255,0.9); padding: 0 4px; }
+.axis-detail {
+  border-left: 4px solid var(--navy-light);
+  padding: 16px 20px;
+  margin: 16px 0;
+  background: rgba(255,255,255,0.03);
+  border-radius: 0 8px 8px 0;
+}
+.axis-detail.axis-1 { border-left-color: #6D88B8; }
+.axis-detail.axis-2 { border-left-color: var(--teal); }
+.axis-detail.axis-3 { border-left-color: var(--coral); }
+.axis-detail.axis-4 { border-left-color: var(--purple); }
 .axis-detail-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
-.axis-detail-name { font-size: 16px; font-weight: 700; color: var(--navy); }
-.axis-detail-grade { font-size: 13px; color: var(--gold); font-weight: 600; }
-.axis-detail-body { font-size: 14px; line-height: 1.7; color: var(--gray-800); }
-.cross-item { background: var(--gray-100); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; font-size: 14px; line-height: 1.6; }
-.book-item { margin-bottom: 18px; }
-.book-title { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.axis-detail-name { font-size: 16px; font-weight: 700; color: var(--gold); }
+.axis-detail-grade { font-size: 13px; color: rgba(255,255,255,0.7); font-weight: 600; }
+.axis-detail-body { font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.85); }
+.cross-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.85); }
+.book-item { background: rgba(201,169,110,0.06); border-radius: 8px; padding: 14px 16px; margin: 8px 0; }
+.book-title { font-size: 15px; font-weight: 600; color: var(--white); margin-bottom: 4px; }
 .book-title-num { color: var(--gold); margin-right: 6px; }
-.book-reason { font-size: 13px; color: var(--gray-500); line-height: 1.6; }
+.book-reason { font-size: 13px; color: var(--gold); line-height: 1.5; margin-top: 4px; }
 .mh-msg {
-  background: linear-gradient(135deg, #f5efe0 0%, #faf6eb 100%);
-  border-left: 3px solid var(--gold);
-  padding: 20px;
-  font-size: 15px; line-height: 1.8;
-  color: var(--gray-800);
-  border-radius: 8px;
+  border: 1px solid rgba(201,169,110,0.3);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 8px 0;
+  text-align: center;
+  background: rgba(201,169,110,0.04);
 }
+.mh-quote-mark { font-size: 32px; color: var(--gold); margin-bottom: 8px; line-height: 1; }
+.mh-quote-body { font-size: 16px; color: var(--white); line-height: 1.8; font-style: italic; }
+.mh-quote-attr { font-size: 13px; color: var(--gold); margin-top: 16px; letter-spacing: 1px; }
 .result-actions { margin-top: 32px; display: flex; flex-direction: column; gap: 10px; }
 
 /* Elapsed time note */
-.elapsed-note { font-size: 13px; color: var(--gray-500); text-align: center; margin-bottom: 12px; }
+.elapsed-note { font-size: 13px; color: rgba(255,255,255,0.6); text-align: center; margin-bottom: 12px; }
 
 @media (min-width: 481px) {
   body { padding: 20px 0; }
@@ -269,13 +343,14 @@ button { font-family: inherit; }
 <!-- Start -->
 <section class="screen start-screen active" id="screen-start">
   <div class="start-top">
-    <h1 class="start-title">경제적 자유 진단</h1>
+    <h1 class="start-title">경제적 자유 <span class="accent">진단</span></h1>
+    <div class="start-underline"></div>
     <div class="start-hook">"나는 경제적 자유에<br>얼마나 가까운가?"</div>
-    <p class="start-desc">34개의 질문으로<br>당신의 현재 위치를 진단합니다.<br><br>소요 시간: 약 5~7분</p>
+    <p class="start-desc">당신이 '안다고 생각하는 것'과<br>'실제로 하고 있는 것' 사이의<br>간극을 보여드립니다.</p>
   </div>
   <div>
-    <button class="cta-button" onclick="startDiagnosis()">시작하기</button>
-    <div class="start-brand">성공을 디자인하라 &nbsp;|&nbsp; BRIDGE</div>
+    <button class="cta-button" onclick="startDiagnosis()">시작하기 · 약 5분</button>
+    <div class="start-brand">성공을 디자인하라 네이버 카페</div>
   </div>
 </section>
 
@@ -310,40 +385,76 @@ button { font-family: inherit; }
 <!-- Result -->
 <section class="screen result-screen" id="screen-result">
   <div class="result-top">
-    <div class="result-label">경제적 자유 진단 결과</div>
-    <div class="result-type-name" id="resultTypeName"></div>
-    <div class="result-metaphor" id="resultMetaphor"></div>
-    <div class="result-stage" id="resultStage"></div>
-    <div class="result-chart-wrap"><canvas id="resultChart" width="300" height="300"></canvas></div>
-    <div class="result-gap" id="resultGap"></div>
+    <div id="result-card" class="result-card">
+      <div class="result-label">경제적 자유 진단 결과</div>
+      <div class="result-type-name" id="resultTypeName"></div>
+      <div class="result-metaphor" id="resultMetaphor"></div>
+      <div class="result-stage-badge" id="resultStage"></div>
+      <div class="result-chart-wrap"><canvas id="resultChart" width="280" height="280"></canvas></div>
+      <div class="result-gap" id="resultGap"></div>
+      <div class="result-brand-footer">성공을 디자인하라</div>
+    </div>
     <div class="scroll-hint">아래로 스크롤 ↓</div>
   </div>
   <div class="result-body">
     <div class="result-desc" id="resultDesc"></div>
 
     <!-- Code Input (shown after clicking CTA) -->
-    <div class="lock-box" id="codeBox" style="display:none; background: var(--navy); color: var(--white);">
-      <div class="lock-title" style="color: var(--gold); font-size: 17px; text-align: center;">🔓 잠금 해제 코드를 입력하세요</div>
-      <div class="lock-prompt" style="color:#cfd4de; text-align:center; margin-top:8px;">카페에 가입하시면 환영 메시지에서<br>잠금 해제 코드를 확인할 수 있습니다.</div>
-      <input id="unlockCodeInput" type="text" maxlength="12" placeholder="코드 입력" style="width:100%; padding:14px 16px; margin:16px 0 8px; border-radius:10px; border:1px solid var(--gray-300); background:#fff; color:var(--gray-800); font-size:16px; font-family:inherit; text-align:center; letter-spacing:2px;">
+    <div class="lock-box" id="codeBox" style="display:none;">
+      <div class="lock-title" style="font-size: 17px; text-align: center;">🔓 잠금 해제 코드를 입력하세요</div>
+      <div class="lock-prompt" style="text-align:center; margin-top:8px;">카페에 가입하시면 환영 메시지에서<br>잠금 해제 코드를 확인할 수 있습니다.</div>
+      <input id="unlockCodeInput" type="text" maxlength="12" placeholder="코드 입력" style="width:100%; padding:14px 16px; margin:16px 0 8px; border-radius:10px; border:1px solid rgba(201,169,110,0.3); background:rgba(255,255,255,0.06); color:var(--white); font-size:16px; font-family:inherit; text-align:center; letter-spacing:2px;">
       <div id="unlockCodeError" style="color:#ffb4a6; font-size:13px; min-height:18px; text-align:center; margin-bottom:10px;"></div>
       <button class="cta-button" onclick="verifyUnlockCode()">잠금 해제하기</button>
-      <div class="lock-footer" style="color:#cfd4de; margin-top:14px;">아직 가입 전이신가요?<br><a href="https://cafe.naver.com/sd161921" target="_blank" style="color:var(--gold); text-decoration:underline;">카페 가입하기 →</a></div>
+      <div class="lock-footer" style="margin-top:14px;">아직 가입 전이신가요?<br><a href="https://cafe.naver.com/sd161921" target="_blank" style="color:var(--gold); text-decoration:underline;">카페 가입하기 →</a></div>
     </div>
 
     <!-- Locked -->
     <div class="lock-box" id="lockBox">
-      <div class="lock-title">🔒 잠금 해제하면 볼 수 있는 것들:</div>
-      <ul class="lock-list">
-        <li>당신에게 지금 필요한 것</li>
-        <li>축별 상세 분석</li>
-        <li>자기 보고 vs 실제 비교</li>
-        <li>맞춤 추천 도서 3권 + MH의 한 마디</li>
-      </ul>
+      <div class="lock-title">🔒 잠금 해제하면 볼 수 있는 것들</div>
+      <div class="cta-preview-list">
+        <div class="cta-preview-item">
+          <div class="cta-preview-title">🎯 당신에게 지금 가장 필요한 한 가지</div>
+          <div class="cta-preview-desc">유형별 맞춤 처방</div>
+        </div>
+        <div class="cta-preview-item">
+          <div class="cta-preview-title">📊 4개 축의 상세 분석</div>
+          <div class="cta-preview-desc">인식 · 지식 · 경험 · 독서학습 각각의 강점과 약점</div>
+        </div>
+        <div class="cta-preview-item">
+          <div class="cta-preview-title">🔍 당신이 생각하는 자신 vs 실제</div>
+          <div class="cta-preview-desc">자기 보고와 행동 데이터의 간극 분석</div>
+        </div>
+        <div class="cta-preview-item">
+          <div class="cta-preview-title">📚 맞춤 추천 도서 3권 + 멘토의 한 마디</div>
+          <div class="cta-preview-desc">당신의 다음 걸음을 위한 구체적 가이드</div>
+        </div>
+      </div>
+
+      <!-- Blur preview -->
+      <div class="blur-preview">
+        <div class="blur-preview-content">
+          <div class="axis-detail axis-1" style="margin:0 0 12px;">
+            <div class="axis-detail-head"><div class="axis-detail-name">Part 1 · 인식</div><div class="axis-detail-grade">████</div></div>
+            <div class="axis-detail-body">당신의 돈에 대한 근본 믿음은 ████ 유형입니다. 경제적 자유를 ████으로 정의하고 있으며, 목적 의식은 ████ 수준입니다.</div>
+          </div>
+          <div class="axis-detail axis-2" style="margin:0;">
+            <div class="axis-detail-head"><div class="axis-detail-name">Part 2 · 지식</div><div class="axis-detail-grade">████</div></div>
+            <div class="axis-detail-body">자산과 부채의 구분, 소득 구조에 대한 이해도는 ████ 수준입니다. 특히 ████ 영역에서 보강이 필요합니다.</div>
+          </div>
+        </div>
+        <div class="blur-overlay">
+          <div class="blur-overlay-inner">
+            <div class="blur-overlay-icon">🔒</div>
+            <div class="blur-overlay-text">코드를 입력하면 전체를 볼 수 있습니다</div>
+          </div>
+        </div>
+      </div>
+
       <div class="elapsed-note" id="elapsedNote"></div>
       <div class="lock-prompt">결과를 그냥 흘려보내시겠습니까?</div>
       <button class="cta-button" onclick="signupClick()">무료로 확인하기 →</button>
-      <div class="lock-footer">카페 가입만으로 전체 결과가 잠금 해제됩니다.</div>
+      <div class="lock-footer">카페 환영 메시지의 코드로 전체 결과가 잠금 해제됩니다.</div>
     </div>
 
     <!-- Unlocked -->
@@ -365,8 +476,12 @@ button { font-family: inherit; }
         <div id="booksList"></div>
       </div>
       <div class="unlocked-section">
-        <div class="section-title">MH의 한 마디</div>
-        <div class="mh-msg" id="mhMsg"></div>
+        <div class="section-title">멘토의 한 마디</div>
+        <div class="mh-msg" id="mhMsg">
+          <div class="mh-quote-mark">"</div>
+          <p class="mh-quote-body" id="mhMsgBody"></p>
+          <div class="mh-quote-attr">— 멘토의 한 마디</div>
+        </div>
       </div>
       <div class="result-actions">
         <button class="cta-button" onclick="shareResult()">결과 공유하기</button>
@@ -381,7 +496,7 @@ button { font-family: inherit; }
 <script>
 /* ===================== 데이터 ===================== */
 const CAFE_URL = "https://cafe.naver.com/sd161921";
-const UNLOCK_CODE = "BRIDGE";
+const UNLOCK_CODE = "0602";
 
 const questions = [
   // 축 1 (인식) — 출현 순서: P1-01 → P1-02 → P1-03 → P1-04 → P1-05 → P1-06 → P1-07 → P1-08 → P1-10 → P1-09
@@ -665,8 +780,8 @@ const typeInfo = {
     description: "당신은 경제적 자유가 무엇인지 알고 있습니다. 방향도 보입니다. 하지만 아직 첫 발을 내딛지 못했습니다. 다리는 이미 놓여 있습니다 — 건너기만 하면 됩니다.",
     need: "지금 필요한 건 '더 아는 것'이 아니라, '작게라도 시작하는 것'입니다. 가장 작은 행동 하나가 모든 것을 바꿀 수 있습니다.",
     books: [
-      { title: "부자의 그릇", reason: "마인드셋의 그릇부터 키워야 행동이 따라옵니다" },
-      { title: "JUST KEEP BUYING", reason: "시작이 반입니다 — 작게라도 꾸준히" },
+      { title: "부자의 그릇", reason: "돈에 대한 근본 인식을 다시 세우는 책" },
+      { title: "JUST KEEP BUYING", reason: "행동의 첫 발을 내딛게 하는 실전서" },
       { title: "위대한 12주", reason: "12주 안에 실행력을 만드는 시스템" }
     ],
     mhMessage: "저도 오랫동안 다리 앞에 서 있었습니다. 책을 읽고, 영상을 보고, 공부를 했지만 정작 행동은 하지 않았습니다. 돌이켜보면, 한 가지 작은 시작이 모든 것을 바꿨습니다."
@@ -676,9 +791,9 @@ const typeInfo = {
     description: "당신은 이미 걷고 있습니다. 행동력이 있습니다. 하지만 지금 걷고 있는 방향이 맞는지, 더 빠른 길은 없는지 확인해본 적이 없습니다.",
     need: "지금 필요한 건 '멈추는 것'이 아니라, '지도를 펼치는 것'입니다. 방향을 확인하고 다시 걸으면 됩니다.",
     books: [
-      { title: "돈의 심리학", reason: "돈에 대한 무의식적 패턴을 먼저 이해해야 합니다" },
-      { title: "부자아빠 가난한아빠", reason: "소득의 구조를 바꾸는 관점의 전환" },
-      { title: "돈의 규칙", reason: "돈이 작동하는 원리를 체계적으로" }
+      { title: "돈의 심리학", reason: "돈과 감정의 관계를 이해하는 첫 책" },
+      { title: "부자아빠 가난한아빠", reason: "소득 구조의 차이를 깨닫게 하는 책" },
+      { title: "돈의 규칙", reason: "투자의 기본 원칙을 세워주는 책" }
     ],
     mhMessage: "행동하는 사람이 가장 빨리 성장합니다. 다만 방향 없는 행동은 체력만 소모합니다. 잠깐 멈춰서 지도를 펼쳐보세요. 그 다음 걸음이 훨씬 정확해집니다."
   },
@@ -687,9 +802,9 @@ const typeInfo = {
     description: "당신은 배움을 멈추지 않는 사람입니다. 책을 읽고, 강의를 듣고, 끊임없이 지식을 쌓고 있습니다. 하지만 그 배움이 아직 삶을 바꾸지 못하고 있습니다.",
     need: "지금 필요한 건 '한 권 더 읽는 것'이 아니라, '읽은 것을 한 가지라도 실행하는 것'입니다.",
     books: [
-      { title: "결국 해내는 사람들의 원칙", reason: "아는 것을 행동으로 바꾸는 시스템" },
-      { title: "JUST KEEP BUYING", reason: "배운 것을 실행으로 옮기는 첫 걸음" },
-      { title: "위대한 12주", reason: "12주 안에 실행 습관을 만드는 프레임워크" }
+      { title: "결국 해내는 사람들의 원칙", reason: "배움을 실천으로 전환하는 원칙" },
+      { title: "JUST KEEP BUYING", reason: "방향을 정하고 꾸준히 실행하는 법" },
+      { title: "위대한 12주", reason: "흩어진 노력을 하나로 모으는 시스템" }
     ],
     mhMessage: "저는 3년 동안 수백 권을 읽었지만, 삶은 바뀌지 않았습니다. 바뀐 건 '이번 주에 한 가지만 실행하자'고 결심한 순간부터였습니다. 배움의 가치는 실행에서 완성됩니다."
   },
@@ -698,9 +813,9 @@ const typeInfo = {
     description: "당신은 아직 출발선에 서 있습니다. 이것은 부끄러운 일이 아닙니다. 대부분의 사람들이 출발선에 서 있다는 사실조차 모릅니다. 당신은 이미 한 발짝 앞에 있습니다.",
     need: "지금 필요한 건 '완벽한 준비'가 아니라, '첫 책 한 권'입니다. 시작이 반입니다.",
     books: [
-      { title: "부자의 그릇", reason: "돈에 대한 생각의 틀을 처음 만들어줄 책" },
-      { title: "부자가 되는 과학적 방법", reason: "100년 전에 쓰인, 부의 가장 단순한 원리" },
-      { title: "바빌론 부자들의 돈 버는 지혜", reason: "가장 쉽고 가장 오래된 돈의 원칙" }
+      { title: "부자의 그릇", reason: "경제적 자유의 출발점을 잡아주는 책" },
+      { title: "부자가 되는 과학적 방법", reason: "부에 대한 사고방식을 처음 세우는 책" },
+      { title: "바빌론 부자들의 돈 버는 지혜", reason: "가장 쉬운 언어로 쓰인 돈의 원리" }
     ],
     mhMessage: "모든 여정은 출발선에서 시작합니다. 이 진단을 끝까지 해보셨다는 것 자체가 이미 시작입니다. 한 권의 책이, 한 번의 대화가, 모든 것을 바꿀 수 있습니다."
   },
@@ -709,9 +824,9 @@ const typeInfo = {
     description: "당신은 인식, 지식, 경험, 학습이 균형 있게 성장하고 있습니다. 이것은 드문 일입니다. 대부분의 사람들은 어느 한쪽이 치우쳐 있습니다.",
     need: "지금 필요한 건 '새로운 방향'이 아니라, '더 깊이 가는 것'입니다. 원칙을 세우고, 자기만의 철학을 만들어갈 단계입니다.",
     books: [
-      { title: "원칙", reason: "자기만의 원칙을 세계적 투자자에게 배우는 책" },
-      { title: "워런 버핏 웨이", reason: "일관된 철학으로 부를 쌓은 사람의 방법론" },
-      { title: "몰입", reason: "깊이의 힘 — 한 분야에 몰입하는 것의 가치" }
+      { title: "원칙", reason: "자기만의 투자 원칙을 체계화하는 책" },
+      { title: "워런 버핏 웨이", reason: "60년 연평균 20%의 원칙을 배우는 책" },
+      { title: "몰입", reason: "한 분야에 깊이 집중하는 힘을 키우는 책" }
     ],
     mhMessage: "균형 잡힌 성장은 가장 강력한 복리입니다. 앞으로는 '더 많이'가 아니라 '더 깊이'가 중요합니다. 자기만의 원칙을 세우는 단계에 와 있습니다."
   },
@@ -720,9 +835,9 @@ const typeInfo = {
     description: "당신은 멀리 보는 사람입니다. 패러다임은 이미 바뀌어 있습니다. 하지만 망원경으로 본 것을 실제로 걸어가려면, 기초 체력이 필요합니다.",
     need: "지금 필요한 건 '더 먼 곳을 보는 것'이 아니라, '발밑을 다지는 것'입니다. 기초 지식과 작은 실행이 비전을 현실로 만듭니다.",
     books: [
-      { title: "돈의 규칙", reason: "비전을 현실로 만드는 기초 체력" },
-      { title: "보도 섀퍼의 돈", reason: "돈의 기본기를 가장 실용적으로 알려주는 책" },
-      { title: "피터 린치의 투자 이야기", reason: "비전을 실제 투자로 연결하는 실전서" }
+      { title: "돈의 규칙", reason: "큰 그림을 실행 가능한 단위로 쪼개는 책" },
+      { title: "보도섀퍼의 돈", reason: "돈과의 관계를 실용적으로 재설정하는 책" },
+      { title: "피터린치의 투자이야기", reason: "실전 투자의 감각을 키우는 책" }
     ],
     mhMessage: "먼 곳을 볼 수 있다는 건 엄청난 자산입니다. 하지만 그 비전은 기초 위에 세워야 합니다. 발밑부터 하나씩 다져가면, 당신이 본 곳에 실제로 도달할 수 있습니다."
   }
@@ -923,6 +1038,7 @@ function showInsightBreak(axisJustDone, nextIdx){
   const { grades, scores } = computeScores();
   const container = document.getElementById('insightContent');
   container.innerHTML = '';
+  const preludeHTML = `<div class="insight-top-line"></div><div class="insight-prelude">잠깐, 여기까지의 당신을 보여드릴게요.</div>`;
 
   if (axisJustDone === 1) {
     const purposeMap = {A:"소비의 자유", B:"가족의 안전", C:"시간의 자유", D:"자기실현"};
@@ -965,6 +1081,8 @@ function showInsightBreak(axisJustDone, nextIdx){
     setTimeout(() => drawInsightRadar(['인식','지식','경험','학습'], [grades.g1, grades.g2, grades.g3, grades.g4]), 100);
   }
 
+  container.innerHTML = preludeHTML + container.innerHTML;
+
   pendingNextIndex = nextIdx;
   pendingAxis = axisJustDone;
   showScreen('screen-insight');
@@ -1000,7 +1118,8 @@ function drawInsightRadar(labels, data){
           pointLabels: { color: '#FFFFFF', font: { size: 13, family: 'Pretendard' } }
         }
       },
-      plugins: { legend: { display: false }, tooltip: { enabled: false } }
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      animation: { duration: 1000, easing: 'easeOutQuart' }
     }
   });
 }
@@ -1038,6 +1157,7 @@ function finishDiagnosis(){
   document.getElementById('resultTypeName').textContent = info.name;
   document.getElementById('resultMetaphor').textContent = info.metaphor;
   document.getElementById('resultStage').textContent = `여정 ${info.stage}단계`;
+  document.getElementById('resultStage').style.display = 'inline-block';
   document.getElementById('resultGap').textContent = getGapSummary(resultType);
 
   // 2페이지
@@ -1075,16 +1195,16 @@ function drawResultChart(grades){
   resultChartInstance = new Chart(ctx, {
     type: 'radar',
     data: {
-      labels: ['인식', '지식', '경험', '학습'],
+      labels: ['인식', '지식', '경험', '독서·학습'],
       datasets: [{
         data: [grades.g1, grades.g2, grades.g3, grades.g4],
-        backgroundColor: 'rgba(201, 169, 110, 0.28)',
+        backgroundColor: 'rgba(201, 169, 110, 0.15)',
         borderColor: '#C9A96E',
-        borderWidth: 2.5,
+        borderWidth: 2,
         pointBackgroundColor: '#C9A96E',
-        pointBorderColor: '#FFFFFF',
-        pointRadius: 5,
-        pointBorderWidth: 2
+        pointBorderColor: '#C9A96E',
+        pointRadius: 4,
+        pointHoverRadius: 6
       }]
     },
     options: {
@@ -1093,13 +1213,14 @@ function drawResultChart(grades){
       scales: {
         r: {
           min: 0, max: 5,
-          ticks: { stepSize: 1, display: false, backdropColor: 'transparent' },
-          grid: { color: 'rgba(255,255,255,0.15)' },
-          angleLines: { color: 'rgba(255,255,255,0.15)' },
-          pointLabels: { color: '#FFFFFF', font: { size: 14, family: 'Pretendard', weight: '600' } }
+          ticks: { stepSize: 1, color: 'rgba(255,255,255,0.4)', backdropColor: 'transparent', font: { size: 10 } },
+          grid: { color: 'rgba(255,255,255,0.1)' },
+          angleLines: { color: 'rgba(255,255,255,0.1)' },
+          pointLabels: { color: 'rgba(255,255,255,0.75)', font: { size: 13, family: 'Pretendard', weight: '600' } }
         }
       },
-      plugins: { legend: { display: false }, tooltip: { enabled: false } }
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      animation: { duration: 1200, easing: 'easeOutQuart' }
     }
   });
 }
@@ -1142,9 +1263,9 @@ function renderUnlocked(grades, info){
   // 축별 상세
   const axisBox = document.getElementById('axisDetails');
   axisBox.innerHTML = '';
-  [[1,'인식',grades.g1],[2,'지식',grades.g2],[3,'경험',grades.g3],[4,'학습',grades.g4]].forEach(([n,name,g]) => {
+  [[1,'Part 1 · 인식',grades.g1],[2,'Part 2 · 지식',grades.g2],[3,'Part 3 · 경험',grades.g3],[4,'Part 4 · 독서·학습',grades.g4]].forEach(([n,name,g]) => {
     const el = document.createElement('div');
-    el.className = 'axis-detail';
+    el.className = `axis-detail axis-${n}`;
     el.innerHTML = `
       <div class="axis-detail-head">
         <div class="axis-detail-name">${name}</div>
@@ -1180,14 +1301,14 @@ function renderUnlocked(grades, info){
     const el = document.createElement('div');
     el.className = 'book-item';
     el.innerHTML = `
-      <div class="book-title"><span class="book-title-num">${i+1}.</span>${b.title}</div>
+      <div class="book-title"><span class="book-title-num">📖</span>${b.title}</div>
       <div class="book-reason">${b.reason}</div>
     `;
     booksBox.appendChild(el);
   });
 
-  // MH
-  document.getElementById('mhMsg').textContent = info.mhMessage;
+  // 멘토
+  document.getElementById('mhMsgBody').textContent = info.mhMessage;
 }
 
 function getPopovaGapMessage(emotion, action){
@@ -1211,6 +1332,7 @@ function getDunningKrugerMessage(self, actual){
 
 /* ===================== 공유 / 재시작 ===================== */
 function shareResult(){
+  trackEvent('freedom_share_click', { event_category: 'engagement', event_label: resultType });
   const info = typeInfo[resultType];
   const stage = state.result?.stage || info.stage;
   const text = `나는 "${info.name}" — ${info.metaphor}. 여정 ${stage}단계.\n나는 경제적 자유에 얼마나 가까운가?`;
