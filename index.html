@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>경제적 자유 진단</title>
+<meta property="og:title" content="경제적 자유 진단">
+<meta property="og:description" content="나는 경제적 자유에 얼마나 가까운가? 34개의 질문으로 당신의 현재 위치를 진단합니다.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+  --navy: #1B2A4A;
+  --navy-light: #2a3d63;
+  --gold: #C9A96E;
+  --gold-light: #F5EFE0;
+  --white: #FFFFFF;
+  --gray-100: #F8F9FA;
+  --gray-300: #DEE2E6;
+  --gray-500: #6C757D;
+  --gray-800: #333333;
+  --red-soft: #E74C3C;
+  --green-soft: #27AE60;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+  background: var(--gray-100);
+  color: var(--gray-800);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+button { font-family: inherit; }
+.app { max-width: 480px; margin: 0 auto; min-height: 100vh; background: var(--white); position: relative; overflow: hidden; }
+
+/* Progress bar */
+.progress-bar { position: fixed; top: 0; left: 0; width: 100%; height: 4px; background: var(--gray-300); z-index: 100; }
+.progress-fill { height: 100%; background: var(--gold); transition: width 0.3s ease; width: 0%; }
+
+/* Screens */
+.screen { display: none; min-height: 100vh; padding: 40px 24px 32px; animation: fadeIn 0.4s ease; }
+.screen.active { display: flex; flex-direction: column; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideInRight {
+  from { transform: translateX(40px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* Start screen */
+.start-screen {
+  background: linear-gradient(160deg, var(--navy) 0%, #0f1a33 100%);
+  color: var(--white);
+  justify-content: space-between;
+  text-align: center;
+  padding: 80px 28px 40px;
+}
+.start-top { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.start-title { font-size: 30px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 24px; }
+.start-hook { font-size: 20px; color: var(--gold); font-weight: 600; margin-bottom: 32px; line-height: 1.4; }
+.start-desc { font-size: 15px; color: #cfd4de; line-height: 1.7; margin-bottom: 40px; }
+.start-brand { font-size: 12px; color: #8a93a8; letter-spacing: 2px; margin-top: 24px; }
+
+/* CTA Button */
+.cta-button {
+  display: block;
+  width: 100%;
+  padding: 18px;
+  background: var(--gold);
+  color: var(--white);
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.1s ease, filter 0.15s ease;
+  font-family: inherit;
+}
+.cta-button:active { transform: scale(0.98); }
+.cta-button:hover { filter: brightness(1.05); }
+.cta-button.secondary { background: transparent; color: var(--navy); border: 2px solid var(--gray-300); }
+
+/* Question screen */
+.question-screen { background: var(--white); padding-top: 60px; }
+.q-header { font-size: 13px; color: var(--gray-500); margin-bottom: 8px; font-weight: 600; letter-spacing: 0.5px; }
+.q-axis { color: var(--gold); }
+.q-prompt {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.5;
+  margin-bottom: 32px;
+  white-space: pre-wrap;
+  animation: slideInRight 0.3s ease-out;
+}
+.q-choices { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+.choice-button {
+  display: flex; align-items: flex-start; gap: 12px;
+  width: 100%;
+  min-height: 48px;
+  padding: 16px 18px;
+  border: 2px solid var(--gray-300);
+  border-radius: 12px;
+  background: var(--white);
+  text-align: left;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--gray-800);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+.choice-button:hover { border-color: var(--gold); background: var(--gold-light); }
+.choice-button.selected { border-color: var(--gold); background: var(--gold-light); font-weight: 600; }
+.choice-label {
+  flex-shrink: 0;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--gray-100);
+  color: var(--gray-500);
+  font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px;
+}
+.choice-button.selected .choice-label { background: var(--gold); color: var(--white); }
+.choice-text { flex: 1; }
+
+.q-nav { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 16px; }
+.back-btn {
+  background: none; border: none;
+  color: var(--gray-500);
+  font-size: 14px; cursor: pointer; padding: 8px 12px;
+  font-family: inherit;
+}
+.back-btn:hover { color: var(--navy); }
+.back-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.q-count { font-size: 13px; color: var(--gray-500); font-weight: 600; }
+
+/* Axis transition screen */
+.axis-transition {
+  background: linear-gradient(160deg, var(--navy) 0%, #0f1a33 100%);
+  color: var(--white);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px 32px;
+  cursor: pointer;
+}
+.axis-num { font-size: 14px; color: var(--gold); letter-spacing: 3px; margin-bottom: 16px; font-weight: 700; }
+.axis-name-big { font-size: 34px; font-weight: 800; margin-bottom: 28px; }
+.axis-msg { font-size: 17px; line-height: 1.7; color: #e0e4ec; max-width: 340px; }
+.tap-hint { font-size: 12px; color: #8a93a8; margin-top: 40px; }
+
+/* Insight break */
+.insight-break {
+  background: linear-gradient(160deg, var(--navy) 0%, #0f1a33 100%);
+  color: var(--white);
+  justify-content: center;
+  text-align: center;
+  padding: 60px 28px 32px;
+}
+.insight-content { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.insight-text { font-size: 17px; line-height: 1.8; margin-bottom: 14px; }
+.insight-text .hl { color: var(--gold); font-weight: 700; }
+.insight-text.small { font-size: 15px; color: #cfd4de; }
+.insight-divider { height: 1px; background: rgba(255,255,255,0.15); margin: 24px auto; width: 60px; }
+.insight-tail { font-size: 18px; font-weight: 600; color: var(--gold); margin-top: 12px; }
+.insight-chart-wrap { display: flex; justify-content: center; margin: 20px 0; }
+
+/* Result screen */
+.result-screen { padding: 0; background: var(--white); }
+.result-top {
+  background: linear-gradient(160deg, var(--navy) 0%, #0f1a33 100%);
+  color: var(--white);
+  padding: 56px 28px 40px;
+  text-align: center;
+}
+.result-label { font-size: 13px; color: var(--gold); letter-spacing: 2px; font-weight: 700; margin-bottom: 12px; }
+.result-type-name { font-size: 30px; font-weight: 800; color: var(--gold); margin-bottom: 10px; letter-spacing: -0.5px; line-height: 1.3; }
+.result-metaphor { font-size: 17px; color: var(--white); margin-bottom: 20px; }
+.result-stage {
+  display: inline-block;
+  padding: 6px 14px;
+  border: 1px solid var(--gold);
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--gold);
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+.result-chart-wrap { display: flex; justify-content: center; margin: 16px 0 20px; }
+.result-gap { font-size: 15px; color: #e0e4ec; line-height: 1.6; margin-top: 16px; }
+.scroll-hint { margin-top: 28px; font-size: 12px; color: #8a93a8; animation: bounce 1.8s infinite; }
+@keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+.result-body { padding: 40px 28px; background: var(--white); }
+.result-desc { font-size: 16px; line-height: 1.8; color: var(--gray-800); margin-bottom: 32px; }
+
+.lock-box {
+  background: var(--gray-100);
+  border-radius: 16px;
+  padding: 28px 24px;
+  margin-bottom: 24px;
+}
+.lock-title { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 16px; }
+.lock-list { list-style: none; margin-bottom: 24px; }
+.lock-list li { font-size: 14px; color: var(--gray-800); padding: 8px 0; padding-left: 22px; position: relative; }
+.lock-list li::before { content: "✦"; position: absolute; left: 0; color: var(--gold); }
+.lock-prompt { font-size: 14px; color: var(--gray-500); margin-bottom: 20px; line-height: 1.6; }
+.lock-prompt strong { color: var(--navy); }
+.lock-footer { font-size: 12px; color: var(--gray-500); margin-top: 16px; text-align: center; }
+
+/* Unlocked sections */
+.unlocked-section { margin: 32px 0; }
+.section-title {
+  font-size: 14px;
+  color: var(--gold);
+  text-align: center;
+  letter-spacing: 3px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding: 8px 0;
+  border-top: 1px solid var(--gray-300);
+  border-bottom: 1px solid var(--gray-300);
+}
+.need-text { font-size: 16px; line-height: 1.8; color: var(--gray-800); padding: 0 4px; }
+.axis-detail { margin-bottom: 20px; }
+.axis-detail-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.axis-detail-name { font-size: 16px; font-weight: 700; color: var(--navy); }
+.axis-detail-grade { font-size: 13px; color: var(--gold); font-weight: 600; }
+.axis-detail-body { font-size: 14px; line-height: 1.7; color: var(--gray-800); }
+.cross-item { background: var(--gray-100); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; font-size: 14px; line-height: 1.6; }
+.book-item { margin-bottom: 18px; }
+.book-title { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.book-title-num { color: var(--gold); margin-right: 6px; }
+.book-reason { font-size: 13px; color: var(--gray-500); line-height: 1.6; }
+.mh-msg {
+  background: linear-gradient(135deg, #f5efe0 0%, #faf6eb 100%);
+  border-left: 3px solid var(--gold);
+  padding: 20px;
+  font-size: 15px; line-height: 1.8;
+  color: var(--gray-800);
+  border-radius: 8px;
+}
+.result-actions { margin-top: 32px; display: flex; flex-direction: column; gap: 10px; }
+
+/* Elapsed time note */
+.elapsed-note { font-size: 13px; color: var(--gray-500); text-align: center; margin-bottom: 12px; }
+
+@media (min-width: 481px) {
+  body { padding: 20px 0; }
+  .app { box-shadow: 0 10px 40px rgba(0,0,0,0.08); border-radius: 20px; overflow: hidden; min-height: 90vh; }
+}
+</style>
+</head>
+<body>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<div class="app">
+
+<!-- Start -->
+<section class="screen start-screen active" id="screen-start">
+  <div class="start-top">
+    <h1 class="start-title">경제적 자유 진단</h1>
+    <div class="start-hook">"나는 경제적 자유에<br>얼마나 가까운가?"</div>
+    <p class="start-desc">34개의 질문으로<br>당신의 현재 위치를 진단합니다.<br><br>소요 시간: 약 5~7분</p>
+  </div>
+  <div>
+    <button class="cta-button" onclick="startDiagnosis()">시작하기</button>
+    <div class="start-brand">성공을 디자인하라 &nbsp;|&nbsp; BRIDGE</div>
+  </div>
+</section>
+
+<!-- Axis Transition -->
+<section class="screen axis-transition" id="screen-axis-transition" onclick="nextAfterAxisTransition()">
+  <div class="axis-num" id="axisTransitionNum">AXIS 2</div>
+  <div class="axis-name-big" id="axisTransitionName">지식</div>
+  <div class="axis-msg" id="axisTransitionMsg"></div>
+  <div class="tap-hint">탭하여 계속</div>
+</section>
+
+<!-- Question -->
+<section class="screen question-screen" id="screen-question">
+  <div class="q-header">
+    <span class="q-axis" id="qAxisLabel">축 1. 인식</span>
+    <span id="qIdLabel"></span>
+  </div>
+  <h2 class="q-prompt" id="qPrompt"></h2>
+  <div class="q-choices" id="qChoices"></div>
+  <div class="q-nav">
+    <button class="back-btn" id="backBtn" onclick="goBack()">← 이전</button>
+    <span class="q-count" id="qCount">1 / 34</span>
+  </div>
+</section>
+
+<!-- Insight Break -->
+<section class="screen insight-break" id="screen-insight">
+  <div class="insight-content" id="insightContent"></div>
+  <button class="cta-button" id="insightContinueBtn" onclick="continueFromInsight()">계속하기 →</button>
+</section>
+
+<!-- Result -->
+<section class="screen result-screen" id="screen-result">
+  <div class="result-top">
+    <div class="result-label">경제적 자유 진단 결과</div>
+    <div class="result-type-name" id="resultTypeName"></div>
+    <div class="result-metaphor" id="resultMetaphor"></div>
+    <div class="result-stage" id="resultStage"></div>
+    <div class="result-chart-wrap"><canvas id="resultChart" width="300" height="300"></canvas></div>
+    <div class="result-gap" id="resultGap"></div>
+    <div class="scroll-hint">아래로 스크롤 ↓</div>
+  </div>
+  <div class="result-body">
+    <div class="result-desc" id="resultDesc"></div>
+
+    <!-- Locked -->
+    <div class="lock-box" id="lockBox">
+      <div class="lock-title">🔒 잠금 해제하면 볼 수 있는 것들:</div>
+      <ul class="lock-list">
+        <li>당신에게 지금 필요한 것</li>
+        <li>축별 상세 분석</li>
+        <li>자기 보고 vs 실제 비교</li>
+        <li>맞춤 추천 도서 3권 + MH의 한 마디</li>
+      </ul>
+      <div class="elapsed-note" id="elapsedNote"></div>
+      <div class="lock-prompt">결과를 그냥 흘려보내시겠습니까?</div>
+      <button class="cta-button" onclick="signupClick()">무료로 확인하기 →</button>
+      <div class="lock-footer">카페 가입만으로 전체 결과가 잠금 해제됩니다.</div>
+    </div>
+
+    <!-- Unlocked -->
+    <div id="unlockedContent" style="display:none;">
+      <div class="unlocked-section">
+        <div class="section-title">당신에게 필요한 건</div>
+        <div class="need-text" id="needText"></div>
+      </div>
+      <div class="unlocked-section">
+        <div class="section-title">축별 상세 분석</div>
+        <div id="axisDetails"></div>
+      </div>
+      <div class="unlocked-section">
+        <div class="section-title">자기 보고 vs 실제</div>
+        <div id="crossDetails"></div>
+      </div>
+      <div class="unlocked-section">
+        <div class="section-title">맞춤 추천 도서 3권</div>
+        <div id="booksList"></div>
+      </div>
+      <div class="unlocked-section">
+        <div class="section-title">MH의 한 마디</div>
+        <div class="mh-msg" id="mhMsg"></div>
+      </div>
+      <div class="result-actions">
+        <button class="cta-button" onclick="shareResult()">결과 공유하기</button>
+        <button class="cta-button secondary" onclick="restartDiagnosis()">다시 진단하기</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+/* ===================== 데이터 ===================== */
+const CAFE_URL = "https://cafe.naver.com/bridgecommunity";
+
+const questions = [
+  // 축 1 (인식) — 출현 순서: P1-01 → P1-02 → P1-03 → P1-04 → P1-05 → P1-06 → P1-07 → P1-08 → P1-10 → P1-09
+  { id:"P1-01", axis:1, prompt:'지금으로부터 10년 뒤, 평일 아침입니다.\n당신은 어디에서, 무엇을 하고 있을까요?\n\n가장 먼저 떠오르는 것에 가까운 것을 골라주세요.',
+    choices:[
+      {label:"A", text:"아직 구체적으로 그려본 적은 없다", score:1},
+      {label:"B", text:"지금보다 여유로운 생활을 하고 있을 것이다", score:2},
+      {label:"C", text:"좋아하는 일을 하면서 살고 있을 것이다", score:3},
+      {label:"D", text:"떠오르는 장면이 있다 — 장소와 하는 일까지 보인다", score:4}
+    ]},
+  { id:"P1-02", axis:1, prompt:'오랜만에 만난 친구가 말합니다.\n"나 요즘 투자 좀 해보려고. 너는 어떻게 생각해?"\n\n당신의 첫 반응에 가장 가까운 것은?',
+    choices:[
+      {label:"A", text:"걱정이 먼저 든다 — 잃으면 어쩌나 싶다", tag:"Vigilance"},
+      {label:"B", text:"관심이 간다 — 나도 해볼까 싶다", tag:"Worship"},
+      {label:"C", text:"궁금하다 — 뭘 하는지, 얼마나 되는지 알고 싶다", tag:"Status"},
+      {label:"D", text:"담담하다 — 나는 내 방식이 있으니까", tag:"자기확신"}
+    ]},
+  { id:"P1-03", axis:1, prompt:'가까운 사람들과 이야기를 나누다가, 한 사람이 말합니다.\n"나 작년에 투자해서 꽤 벌었어."\n당신보다 특별히 더 아는 것 같지 않은 사람입니다.\n\n솔직하게, 가장 먼저 드는 감정에 가까운 것은?',
+    choices:[
+      {label:"A", text:"운이 좋았네. 다음엔 어떻게 될지 모르지.", tag:"Vigilance"},
+      {label:"B", text:"나도 해볼까... 방법을 알아봐야겠다.", tag:"Worship"},
+      {label:"C", text:"솔직히 자극이 된다. 나도 뭔가 해야 하나 싶다.", tag:"Status"},
+      {label:"D", text:"잘됐다. 근데 내 방식대로 하는 게 맞아.", tag:"자기확신"}
+    ]},
+  { id:"P1-04", axis:1, prompt:'하루 중 무의식적으로 하게 되는 행동이 있습니다.\n돈과 관련해서, 당신이 가장 자주 하는 것에 가까운 것은?',
+    choices:[
+      {label:"A", text:"사고 싶은 것을 검색하거나 구경한다", tag:"소비"},
+      {label:"B", text:"주식/코인 시세나 계좌 잔고를 확인한다", tag:"투자"},
+      {label:"C", text:"경제/재테크 관련 콘텐츠나 다른 사람들의 후기를 본다", tag:"학습"},
+      {label:"D", text:"절약할 수 있는 방법을 찾아보거나 가계부를 정리한다", tag:"저축"},
+      {label:"E", text:"딱히 돈과 관련된 행동을 의식적으로 하지 않는다", tag:"무관심"}
+    ]},
+  { id:"P1-05", axis:1, randomize:true, prompt:'친한 동생(또는 후배)이 당신에게 물어봅니다.\n"형(언니), 나 돈 모으려면 뭐부터 해야 해?"\n\n당신이 가장 먼저 해줄 말에 가까운 것은?',
+    choices:[
+      {label:"A", text:"쓸데없는 지출부터 줄여.", tag:"저축우선"},
+      {label:"B", text:"돈 공부를 먼저 해. 모르고 하면 위험해.", tag:"학습우선"},
+      {label:"C", text:"지금 하는 일에 집중해서 더 잘 벌어.", tag:"소득우선"},
+      {label:"D", text:"일단 적금이든 투자든 시작이라도 해봐.", tag:"행동우선"},
+      {label:"E", text:"왜 돈을 모으려는지부터 생각해봐.", tag:"목적우선"}
+    ]},
+  { id:"P1-06", axis:1, randomize:true, prompt:'네 사람이 각자 자기 이야기를 합니다.\n당신이 가장 되고 싶은 모습은?',
+    choices:[
+      {label:"A", text:"좋은 회사에서 인정받으며 안정적으로 살고 있어요.", score:1, tag:"E"},
+      {label:"B", text:"제 가게를 운영하고 있어요. 힘들지만 제 일이라 보람 있어요.", score:2, tag:"S"},
+      {label:"C", text:"투자 수익으로 생활해요. 특별히 일을 하지 않아도 됩니다.", score:3, tag:"I"},
+      {label:"D", text:"제가 만든 사업을 팀이 운영해요. 저는 큰 그림만 그려요.", score:4, tag:"B"}
+    ]},
+  { id:"P1-07", axis:1, prompt:'돈을 더 벌고 싶다는 마음이 들었습니다.\n가장 먼저 시도해볼 것은?',
+    choices:[
+      {label:"A", text:"이직하거나 승진을 준비한다", tag:"E"},
+      {label:"B", text:"퇴근 후 부업이나 프리랜서 일을 시작한다", tag:"S"},
+      {label:"C", text:"지출을 줄이고 저축을 늘린다", tag:"저축"},
+      {label:"D", text:"주식이나 부동산 같은 투자를 시작한다", tag:"I"},
+      {label:"E", text:"사업 아이템을 구상해본다", tag:"B"}
+    ]},
+  { id:"P1-08", axis:1, prompt:'경제적 자유를 이루고 싶은 가장 솔직한 이유는 무엇인가요?',
+    choices:[
+      {label:"A", text:"원하는 것을 가격 보지 않고 사고 싶다", score:1, tag:"수단"},
+      {label:"B", text:"가족에게 더 좋은 환경을 만들어주고 싶다", score:2, tag:"보호"},
+      {label:"C", text:"하루가 온전히 내 것인 삶을 살고 싶다", score:3, tag:"해방"},
+      {label:"D", text:"내가 진짜 하고 싶은 일에 시간을 쏟고 싶다", score:4, tag:"존재"}
+    ]},
+  { id:"P1-10", axis:1, prompt:'어릴 때, 집에서 "돈" 이야기가 나올 때의 분위기를 떠올려보세요.\n가장 가까운 것은?',
+    choices:[
+      {label:"A", text:"돈 이야기가 거의 나오지 않았다", tag:"무관"},
+      {label:"B", text:"돈 이야기가 나오면 분위기가 무거워졌다", tag:"부정"},
+      {label:"C", text:"부모님이 절약과 저축을 자주 강조하셨다", tag:"보수"},
+      {label:"D", text:"부모님이 돈을 버는 방법이나 기회에 대해 이야기하셨다", tag:"성장"},
+      {label:"E", text:"돈 때문에 다투는 모습을 자주 보았다", tag:"갈등"}
+    ]},
+  { id:"P1-09", axis:1, prompt:'최근 한 달을 떠올려보세요.\n돈과 관련해서 가장 많은 시간을 쓴 것은?',
+    choices:[
+      {label:"A", text:"소비 (쇼핑, 외식, 여가 등)", tag:"소비"},
+      {label:"B", text:"저축/절약 (가계부, 비용 절감 등)", tag:"저축"},
+      {label:"C", text:"학습 (경제 관련 책, 유튜브, 뉴스 등)", tag:"학습"},
+      {label:"D", text:"투자 관련 활동 (리서치, 매매, 포트폴리오 점검 등)", tag:"투자"},
+      {label:"E", text:"돈에 대해 생각은 많이 했지만, 구체적인 행동으로 옮긴 적은 없다", tag:"미실행"}
+    ]},
+
+  // 축 2 (지식) — 출현 순서: P2-01 → P2-02 → P2-03 → P2-04 → P2-05 → P2-06 → P2-08 → P2-07 → P2-09
+  { id:"P2-01", axis:2, prompt:'친구가 말합니다.\n"나 자산이 5억이야. 대출이 3억 있긴 한데, 차도 바꾸고 싶고 여행도 가고 싶어."\n\n당신이라면 뭐라고 하겠습니까?',
+    choices:[
+      {label:"A", text:"5억이면 넉넉하니까 좀 써도 되지 않을까", score:1},
+      {label:"B", text:"대출 3억 빼면 2억인데, 좀 조심하는 게 낫지 않아?", score:2},
+      {label:"C", text:"대출 이자가 얼마인지, 갚는 데 얼마나 걸리는지부터 봐야 하지 않아?", score:3},
+      {label:"D", text:"그 5억이 다 현금화할 수 있는 건지도 중요해. 아파트는 당장 못 쓰잖아", score:4}
+    ]},
+  { id:"P2-02", axis:2, prompt:'지인이 고민을 말합니다.\n"월급 300만원인데, 전세 대출 이자 40만원, 할부 50만원, 보험 30만원 나가.\n그래도 매달 적금 50만원은 넣고 있어. 나 괜찮은 거지?"\n\n당신의 생각에 가장 가까운 것은?',
+    choices:[
+      {label:"A", text:"적금을 넣고 있으니 잘하고 있는 것이다", score:1},
+      {label:"B", text:"고정 지출이 월급의 절반 가까이 되니까 좀 위험하다", score:2},
+      {label:"C", text:"적금보다 대출 이자를 먼저 갚는 게 나을 수도 있다", score:3},
+      {label:"D", text:"전체 그림을 봐야 한다 — 비상금은 있는지, 대출 금리는 몇 %인지", score:4},
+      {label:"E", text:"이런 판단을 해본 적 없다", score:0}
+    ]},
+  { id:"P2-03", axis:2, prompt:'세 사람이 각각 돈을 벌고 있습니다.\n첫째는 월급, 둘째는 주식 배당, 셋째는 직접 운영하는 카페 수익.\n\n셋 중에서 \'경제적으로 가장 자유롭다\'고 할 수 있는 사람은?',
+    choices:[
+      {label:"A", text:"첫째 — 월급이 안정적이니까", score:1},
+      {label:"B", text:"둘째 — 일을 안 해도 돈이 들어오니까", score:3},
+      {label:"C", text:"셋째 — 자기 사업을 하고 있으니까", score:1},
+      {label:"D", text:"딱 잘라 말하기 어렵다 — 각각 장단점이 있다", score:2},
+      {label:"E", text:"이런 비교를 해본 적 없다", score:0}
+    ]},
+  { id:"P2-04", axis:2, prompt:'연봉 5,000만원인 사람과 월 300만원의 투자 수익이 있는 사람이 있습니다.\n연봉이 더 높은 건 첫째입니다.\n\n10년 뒤를 생각하면, 어떤 차이가 있을까요?',
+    choices:[
+      {label:"A", text:"연봉이 높으니 첫째가 더 부자일 것이다", score:1},
+      {label:"B", text:"투자 수익이 불어날 수 있어서 둘째가 유리할 수도 있다", score:3},
+      {label:"C", text:"얼마를 쓰고 얼마를 모으느냐가 중요하지, 소득 종류는 상관없다", score:2},
+      {label:"D", text:"이런 비교를 해본 적 없다", score:0}
+    ]},
+  { id:"P2-05", axis:2, prompt:'매달 50만원을 연 7% 수익률로 20년간 투자하면,\n넣은 돈의 총액은 1억 2,000만원입니다.\n\n20년 뒤 총액은 대략 얼마일까요?',
+    choices:[
+      {label:"A", text:"약 1억 5,000만원 (조금 더 불어남)", score:1},
+      {label:"B", text:"약 2억 원 (거의 두 배)", score:2},
+      {label:"C", text:"약 2억 6,000만원 (두 배 이상)", score:3},
+      {label:"D", text:"감이 잘 안 온다", score:0}
+    ]},
+  { id:"P2-06", axis:2, prompt:'1,000만원을 투자하려고 합니다.\n당신의 판단에 가장 가까운 것은?',
+    choices:[
+      {label:"A", text:"확신이 있는 한 종목에 집중하는 게 낫다", score:2},
+      {label:"B", text:"여러 종목에 나누는 게 무조건 안전하다", score:1},
+      {label:"C", text:"나누더라도 어떤 종목으로 나누느냐가 더 중요하다", score:3},
+      {label:"D", text:"투자 경험이 없어서 판단하기 어렵다", score:0}
+    ]},
+  { id:"P2-08", axis:2, prompt:'같은 분야에서 첫째는 고객을 직접 만나 하루 최대 5명을 상담하고,\n둘째는 온라인 강의를 만들어 수강생 제한 없이 판매합니다.\n\n5년 뒤, 누가 더 성공했을까요?',
+    choices:[
+      {label:"A", text:"첫째 — 직접 만나야 신뢰가 쌓이고 입소문이 난다", score:2},
+      {label:"B", text:"둘째 — 한 번 만든 강의가 계속 팔리니까 수익이 쌓인다", score:3},
+      {label:"C", text:"콘텐츠 품질과 마케팅에 달렸지, 방식만으로는 모른다", score:2},
+      {label:"D", text:"이런 차이를 생각해본 적 없다", score:0}
+    ]},
+  { id:"P2-07", axis:2, prompt:'은행 예금 금리가 연 4%이고, 물가 상승률이 연 3%입니다.\n1,000만원을 1년간 예금에 넣어두면,\n1년 뒤 이 돈으로 살 수 있는 것은?',
+    choices:[
+      {label:"A", text:"이자가 붙으니 지금보다 더 많은 것을 살 수 있다", score:2},
+      {label:"B", text:"금리가 물가보다 높으니 조금 이득이지만, 세금을 빼면 거의 비슷하다", score:3},
+      {label:"C", text:"은행에 넣어두는 게 가장 안전한 방법이다", score:1},
+      {label:"D", text:"이런 계산을 해본 적 없다", score:0}
+    ]},
+  { id:"P2-09", axis:2, prompt:'두 사람이 각자 사업을 합니다.\n첫째는 "매달 매출이 3,000만원"이라 하고, 둘째는 "매달 순이익이 300만원"이라 합니다.\n\n누구의 사업이 더 잘 되고 있는지 판단할 수 있나요?',
+    choices:[
+      {label:"A", text:"매출이 높은 첫째가 더 잘 되고 있다", score:1},
+      {label:"B", text:"순이익을 말하는 둘째가 더 정확히 알고 있는 것이다", score:2},
+      {label:"C", text:"첫째의 비용을 모르니 비교할 수 없다", score:3},
+      {label:"D", text:"사업 경험이 없어서 판단하기 어렵다", score:0}
+    ]},
+
+  // 축 3 (경험) — 출현 순서: P3-01 → P3-03 → P3-02 → P3-04 → P3-05 → P3-06 → P3-07 → P3-08
+  { id:"P3-01", axis:3, prompt:'예상치 못한 돈이 들어왔습니다. 평소 월 수입의 절반 정도 되는 금액입니다.\n\n가장 먼저 떠오르는 생각에 가까운 것은?',
+    choices:[
+      {label:"A", text:"갖고 싶었던 것을 살 수 있겠다", tag:"소비"},
+      {label:"B", text:"일단 통장에 넣어두고 나중에 생각해야겠다", tag:"저축"},
+      {label:"C", text:"대출이나 할부를 줄일 수 있겠다", tag:"부채감소"},
+      {label:"D", text:"투자에 넣을 수 있겠다", tag:"투자"},
+      {label:"E", text:"딱히 떠오르는 게 없다 — 그냥 통장에 있겠지", tag:"무관심"}
+    ]},
+  { id:"P3-03", axis:3, randomize:true, prompt:'투자(주식, 부동산, 코인, 펀드 등) 경험이 있으신가요?',
+    choices:[
+      {label:"A", text:"해보고 싶지만 아직 시작하지 못했다", score:1},
+      {label:"B", text:"1년 이상 꾸준히 하고 있다", score:4},
+      {label:"C", text:"해본 적은 있지만 지금은 하고 있지 않다", score:2},
+      {label:"D", text:"아직 해본 적 없다", score:0},
+      {label:"E", text:"현재 하고 있다 — 시작한 지 1년 미만", score:3}
+    ]},
+  { id:"P3-02", axis:3, prompt:'이번 달 예상치 못한 지출이 생겼습니다. 냉장고가 고장 나서 새로 사야 합니다.\n\n당신의 첫 반응에 가장 가까운 것은?',
+    choices:[
+      {label:"A", text:"카드로 일단 결제한다 — 다음 달에 생각하지 뭐", tag:"후불"},
+      {label:"B", text:"당장은 어렵다 — 할부를 알아봐야 한다", tag:"할부"},
+      {label:"C", text:"부담되지만 저축한 돈에서 꺼내 쓴다", tag:"저축인출"},
+      {label:"D", text:"비상금으로 따로 모아둔 돈이 있어서 거기서 쓴다", tag:"비상금"},
+      {label:"E", text:"크게 고민되지 않는다 — 이 정도는 여유가 있다", tag:"여유"}
+    ]},
+  { id:"P3-04", axis:3, prompt:'몇 달 동안 모은 돈으로 투자를 했는데, 예상과 다르게 손실이 났습니다.\n(투자 경험이 없다면, 저축 목표를 못 맞추거나 큰 지출이 생긴 상황을 떠올려보세요.)\n\n그 상황에서 당신의 반응에 가장 가까운 것은?',
+    choices:[
+      {label:"A", text:"당분간 돈 이야기를 생각하고 싶지 않다", score:1},
+      {label:"B", text:"왜 이렇게 됐는지 알아보지만, 일단 손을 뗀다", score:2},
+      {label:"C", text:"방법이 잘못됐다고 판단하고 다른 방식을 찾아본다", score:3},
+      {label:"D", text:"원래 계획대로 유지한다 — 단기 변동은 신경 쓰지 않는다", score:3},
+      {label:"E", text:"이런 경험을 해본 적이 없다", score:0}
+    ]},
+  { id:"P3-05", axis:3, prompt:'돈이나 경제에 대해 더 알고 싶다는 생각이 들었을 때,\n실제로 한 행동에 가장 가까운 것은?',
+    choices:[
+      {label:"A", text:"아직 그런 생각이 들어본 적 없다", tag:"미시작"},
+      {label:"B", text:"유튜브나 SNS에서 관련 내용을 찾아본다", tag:"콘텐츠"},
+      {label:"C", text:"책, 강의, 스터디 등 체계적으로 배운 적 있다", tag:"체계적"},
+      {label:"D", text:"이미 하고 있는 사람을 찾아가서 물어본다", tag:"관계기반"}
+    ]},
+  { id:"P3-06", axis:3, randomize:true, prompt:'경제적 목표를 구체적으로 세워본 적이 있나요?',
+    choices:[
+      {label:"A", text:"구체적 목표를 세우고 달성한 적이 있다", score:3},
+      {label:"B", text:"구체적으로 세워본 적 없다", score:0},
+      {label:"C", text:"목표를 세우고 실행하는 것이 습관이 되어 있다", score:4},
+      {label:"D", text:'"돈을 모아야지" 정도로 막연하게 생각한 적은 있다', score:1},
+      {label:"E", text:"구체적 금액이나 기간을 정한 적 있지만 지키지 못했다", score:2}
+    ]},
+  { id:"P3-07", axis:3, prompt:'"이대로는 안 되겠다"고 느낀 적이 있나요?\n돈과 관련해서 그런 순간이 있었다면,\n그 뒤에 실제로 한 것에 가장 가까운 것은?',
+    choices:[
+      {label:"A", text:"그런 생각이 든 적 없다 — 지금 방식에 큰 불만이 없다", score:1},
+      {label:"B", text:"그렇게 느꼈지만 결국 달라진 건 없다", score:2},
+      {label:"C", text:"소비 습관이나 저축 방식을 바꿨다", score:3},
+      {label:"D", text:"새로운 소득원이나 투자를 시작했다", score:3},
+      {label:"E", text:"여러 번 바꿔왔다 — 시행착오를 거치며 계속 조정 중이다", score:4}
+    ]},
+  { id:"P3-08", axis:3, prompt:'주변 사람이 투자나 사업으로 큰 돈을 벌었다는 이야기를 들었을 때,\n실제로 한 행동에 가장 가까운 것은?',
+    choices:[
+      {label:"A", text:"특별히 한 것이 없다 — 이야기를 듣고 넘겼다", tag:"무행동"},
+      {label:"B", text:"관심이 생겨서 검색하거나 알아봤지만 실행하지는 않았다", tag:"탐색"},
+      {label:"C", text:"자극을 받아서 실제로 뭔가를 시작했다", tag:"실행"},
+      {label:"D", text:"그 사람에게 직접 물어보거나 조언을 구했다", tag:"관계행동"},
+      {label:"E", text:"그런 이야기를 들어본 적이 없다", tag:"미경험"}
+    ]},
+
+  // 축 4 (독서·학습) — 출현 순서: P4-01 → P4-02 → P4-03 → P4-04 → P4-05 → P4-06 → P4-07
+  { id:"P4-01", axis:4, prompt:'경제 관련 책이나 콘텐츠를 처음 접하게 된 계기에 가장 가까운 것은?',
+    choices:[
+      {label:"A", text:"주변 사람이 추천하거나 화제가 돼서", tag:"외부추천"},
+      {label:"B", text:"돈 문제가 생겨서 방법을 찾다가", tag:"문제해결"},
+      {label:"C", text:"목표를 세우면서 필요하다고 느껴서", tag:"목표기반"},
+      {label:"D", text:"평소에 이런 내용을 찾아보는 편이라", tag:"자발적"},
+      {label:"E", text:"아직 접해본 적이 없다", tag:"미시작"}
+    ]},
+  { id:"P4-02", axis:4, prompt:'좋은 책(또는 콘텐츠)을 읽었습니다.\n주변 사람이 "그거 어때?"라고 물어봅니다.\n\n당신의 반응에 가장 가까운 것은?',
+    choices:[
+      {label:"A", text:'"괜찮았어" 정도로 짧게 답한다', score:1},
+      {label:"B", text:"인상 깊었던 내용을 한두 가지 이야기해준다", score:2},
+      {label:"C", text:'"이 부분이 내 상황이랑 비슷해서 이렇게 해보려고" 라고 말한다', score:3},
+      {label:"D", text:'"근데 이 부분은 좀 아쉬웠어" 라고 비판적 의견도 함께 말한다', score:3},
+      {label:"E", text:"책이나 콘텐츠를 거의 보지 않아서 이런 상황이 없다", score:0}
+    ]},
+  { id:"P4-03", axis:4, prompt:'두 권의 책에서 정반대 주장을 읽었습니다.\n한 책은 "집중 투자가 답이다", 다른 책은 "반드시 분산해야 한다"고 합니다.\n\n당신의 반응에 가장 가까운 것은?',
+    choices:[
+      {label:"A", text:"나중에 읽은 쪽이 더 설득력 있게 느껴진다", score:1},
+      {label:"B", text:"둘 다 일리가 있다고 생각하고 넘어간다", score:2},
+      {label:"C", text:"어떤 상황에서 어떤 전략이 맞는지 따져본다", score:3},
+      {label:"D", text:"각 저자의 배경이나 근거를 비교해본다", score:3},
+      {label:"E", text:"이런 상황을 경험해본 적 없다", score:0}
+    ]},
+  { id:"P4-04", axis:4, prompt:'경제 관련 책을 읽다가, 전에 읽었던 다른 분야 책의 내용이 떠올랐습니다.\n이런 경험이 있다면, 그때 한 것에 가장 가까운 것은?',
+    choices:[
+      {label:"A", text:"그런 경험이 없다 — 보통 읽고 넘어간다", score:1},
+      {label:"B", text:'"비슷한 이야기네" 하고 잠깐 생각하고 넘어간다', score:2},
+      {label:"C", text:"흥미로워서 두 책의 공통점을 정리해보거나 메모한다", score:3},
+      {label:"D", text:"그 연결을 바탕으로 내 생각이나 전략을 다시 정리한다", score:3},
+      {label:"E", text:"여러 권 읽어본 적이 없다", score:0}
+    ]},
+  { id:"P4-05", axis:4, randomize:true, prompt:'1년 전에 읽은 책의 내용을 떠올려보세요.\n지금 남아 있는 것에 가장 가까운 것은?',
+    choices:[
+      {label:"A", text:"제목이나 주제는 기억나지만 내용은 잘 떠오르지 않는다", score:2},
+      {label:"B", text:"배운 것이 자연스럽게 일상이 되어 있어서 따로 의식하지 않는다", score:4},
+      {label:"C", text:"솔직히 뭘 읽었는지 잘 기억나지 않는다", score:1},
+      {label:"D", text:"인상 깊었던 문장이나 개념이 몇 가지 떠오른다", score:3},
+      {label:"E", text:"1년 전에 읽은 책이 없다", score:0}
+    ]},
+  { id:"P4-06", axis:4, prompt:'6개월 전에 좋은 책(또는 콘텐츠)을 봤습니다.\n지금 그 내용에 대해 어떤 상태인가요?',
+    choices:[
+      {label:"A", text:"읽었다는 것은 기억나지만 내용은 흐릿하다", score:1},
+      {label:"B", text:"필요한 부분이 생기면 다시 찾아볼 것이다", score:2},
+      {label:"C", text:"가끔 떠올리거나 다시 펼쳐본 적 있다", score:2},
+      {label:"D", text:"그 내용을 바탕으로 다른 책이나 자료를 더 찾아봤다", score:3},
+      {label:"E", text:"6개월 전에 본 것이 없다", score:0}
+    ]},
+  { id:"P4-07", axis:4, prompt:'경제적 자유에 대해 주변 사람과 대화할 때,\n당신의 위치에 가장 가까운 것은?',
+    choices:[
+      {label:"A", text:"듣는 쪽이다 — 다른 사람들이 더 잘 아는 것 같다", tag:"초보"},
+      {label:"B", text:"기본적인 대화는 하지만 깊은 이야기는 어렵다", tag:"기본"},
+      {label:"C", text:"내 의견을 말할 수 있고 때로는 조언도 한다", tag:"중급"},
+      {label:"D", text:"대화를 이끌거나 가르쳐줄 수 있는 수준이다", tag:"전문"},
+      {label:"E", text:"주변에 이런 대화를 하는 사람이 없다", tag:"고립"}
+    ]}
+];
+
+const AXIS_NAMES = {1:"인식", 2:"지식", 3:"경험", 4:"독서·학습"};
+const AXIS_TRANSITIONS = {
+  2: "정답을 맞히는 것이 아닙니다.\n평소 당신이 돈에 대해 어떻게 생각하는지를 봅니다.",
+  3: "잘하고 있느냐가 아닙니다.\n지금 어디에 서 있는지를 봅니다.",
+  4: "많이 배웠느냐가 아닙니다.\n어떻게 배우느냐가 중요합니다."
+};
+
+const typeInfo = {
+  knower: {
+    name: "아는데 안 하는 사람", metaphor: "다리 앞에 서 있는 사람", stage: 3,
+    description: "당신은 경제적 자유가 무엇인지 알고 있습니다. 방향도 보입니다. 하지만 아직 첫 발을 내딛지 못했습니다. 다리는 이미 놓여 있습니다 — 건너기만 하면 됩니다.",
+    need: "지금 필요한 건 '더 아는 것'이 아니라, '작게라도 시작하는 것'입니다. 가장 작은 행동 하나가 모든 것을 바꿀 수 있습니다.",
+    books: [
+      { title: "부자의 그릇", reason: "마인드셋의 그릇부터 키워야 행동이 따라옵니다" },
+      { title: "JUST KEEP BUYING", reason: "시작이 반입니다 — 작게라도 꾸준히" },
+      { title: "위대한 12주", reason: "12주 안에 실행력을 만드는 시스템" }
+    ],
+    mhMessage: "저도 오랫동안 다리 앞에 서 있었습니다. 책을 읽고, 영상을 보고, 공부를 했지만 정작 행동은 하지 않았습니다. 돌이켜보면, 한 가지 작은 시작이 모든 것을 바꿨습니다."
+  },
+  doer: {
+    name: "하는데 모르고 하는 사람", metaphor: "지도 없이 걷고 있는 사람", stage: 2,
+    description: "당신은 이미 걷고 있습니다. 행동력이 있습니다. 하지만 지금 걷고 있는 방향이 맞는지, 더 빠른 길은 없는지 확인해본 적이 없습니다.",
+    need: "지금 필요한 건 '멈추는 것'이 아니라, '지도를 펼치는 것'입니다. 방향을 확인하고 다시 걸으면 됩니다.",
+    books: [
+      { title: "돈의 심리학", reason: "돈에 대한 무의식적 패턴을 먼저 이해해야 합니다" },
+      { title: "부자아빠 가난한아빠", reason: "소득의 구조를 바꾸는 관점의 전환" },
+      { title: "돈의 규칙", reason: "돈이 작동하는 원리를 체계적으로" }
+    ],
+    mhMessage: "행동하는 사람이 가장 빨리 성장합니다. 다만 방향 없는 행동은 체력만 소모합니다. 잠깐 멈춰서 지도를 펼쳐보세요. 그 다음 걸음이 훨씬 정확해집니다."
+  },
+  bookworm: {
+    name: "열심히 배우는데 방향 없는 사람", metaphor: "서재에 머무는 사람", stage: 3,
+    description: "당신은 배움을 멈추지 않는 사람입니다. 책을 읽고, 강의를 듣고, 끊임없이 지식을 쌓고 있습니다. 하지만 그 배움이 아직 삶을 바꾸지 못하고 있습니다.",
+    need: "지금 필요한 건 '한 권 더 읽는 것'이 아니라, '읽은 것을 한 가지라도 실행하는 것'입니다.",
+    books: [
+      { title: "결국 해내는 사람들의 원칙", reason: "아는 것을 행동으로 바꾸는 시스템" },
+      { title: "JUST KEEP BUYING", reason: "배운 것을 실행으로 옮기는 첫 걸음" },
+      { title: "위대한 12주", reason: "12주 안에 실행 습관을 만드는 프레임워크" }
+    ],
+    mhMessage: "저는 3년 동안 수백 권을 읽었지만, 삶은 바뀌지 않았습니다. 바뀐 건 '이번 주에 한 가지만 실행하자'고 결심한 순간부터였습니다. 배움의 가치는 실행에서 완성됩니다."
+  },
+  starter: {
+    name: "아직 시작 전인 사람", metaphor: "출발선에 선 사람", stage: 1,
+    description: "당신은 아직 출발선에 서 있습니다. 이것은 부끄러운 일이 아닙니다. 대부분의 사람들이 출발선에 서 있다는 사실조차 모릅니다. 당신은 이미 한 발짝 앞에 있습니다.",
+    need: "지금 필요한 건 '완벽한 준비'가 아니라, '첫 책 한 권'입니다. 시작이 반입니다.",
+    books: [
+      { title: "부자의 그릇", reason: "돈에 대한 생각의 틀을 처음 만들어줄 책" },
+      { title: "부자가 되는 과학적 방법", reason: "100년 전에 쓰인, 부의 가장 단순한 원리" },
+      { title: "바빌론 부자들의 돈 버는 지혜", reason: "가장 쉽고 가장 오래된 돈의 원칙" }
+    ],
+    mhMessage: "모든 여정은 출발선에서 시작합니다. 이 진단을 끝까지 해보셨다는 것 자체가 이미 시작입니다. 한 권의 책이, 한 번의 대화가, 모든 것을 바꿀 수 있습니다."
+  },
+  balanced: {
+    name: "균형 잡힌 성장자", metaphor: "자기 길을 걷고 있는 사람", stage: 4,
+    description: "당신은 인식, 지식, 경험, 학습이 균형 있게 성장하고 있습니다. 이것은 드문 일입니다. 대부분의 사람들은 어느 한쪽이 치우쳐 있습니다.",
+    need: "지금 필요한 건 '새로운 방향'이 아니라, '더 깊이 가는 것'입니다. 원칙을 세우고, 자기만의 철학을 만들어갈 단계입니다.",
+    books: [
+      { title: "원칙", reason: "자기만의 원칙을 세계적 투자자에게 배우는 책" },
+      { title: "워런 버핏 웨이", reason: "일관된 철학으로 부를 쌓은 사람의 방법론" },
+      { title: "몰입", reason: "깊이의 힘 — 한 분야에 몰입하는 것의 가치" }
+    ],
+    mhMessage: "균형 잡힌 성장은 가장 강력한 복리입니다. 앞으로는 '더 많이'가 아니라 '더 깊이'가 중요합니다. 자기만의 원칙을 세우는 단계에 와 있습니다."
+  },
+  visionary: {
+    name: "패러다임만 앞서간 사람", metaphor: "망원경을 든 사람", stage: 2,
+    description: "당신은 멀리 보는 사람입니다. 패러다임은 이미 바뀌어 있습니다. 하지만 망원경으로 본 것을 실제로 걸어가려면, 기초 체력이 필요합니다.",
+    need: "지금 필요한 건 '더 먼 곳을 보는 것'이 아니라, '발밑을 다지는 것'입니다. 기초 지식과 작은 실행이 비전을 현실로 만듭니다.",
+    books: [
+      { title: "돈의 규칙", reason: "비전을 현실로 만드는 기초 체력" },
+      { title: "보도 섀퍼의 돈", reason: "돈의 기본기를 가장 실용적으로 알려주는 책" },
+      { title: "피터 린치의 투자 이야기", reason: "비전을 실제 투자로 연결하는 실전서" }
+    ],
+    mhMessage: "먼 곳을 볼 수 있다는 건 엄청난 자산입니다. 하지만 그 비전은 기초 위에 세워야 합니다. 발밑부터 하나씩 다져가면, 당신이 본 곳에 실제로 도달할 수 있습니다."
+  }
+};
+
+const axisInterpretation = {
+  1: { 5:"돈에 대한 패러다임이 깊고 명확합니다. 장기적 시야과 뚜렷한 목적의식을 가지고 있습니다.",
+       4:"돈에 대한 기본적인 방향이 잡혀 있습니다. 좀 더 구체적인 비전을 세울 단계입니다.",
+       3:"돈에 대해 생각해본 적은 있지만, 아직 뚜렷한 방향이 잡히지 않았습니다.",
+       2:"돈에 대한 인식이 아직 형성 초기 단계입니다. 자신만의 관점을 만들어갈 필요가 있습니다.",
+       1:"돈에 대해 깊이 생각해본 경험이 아직 적습니다. 여기서부터 시작하면 됩니다." },
+  2: { 5:"경제·투자·사업의 기초가 탄탄합니다. 실전에 바로 적용할 수 있는 수준입니다.",
+       4:"기본적인 경제 지식이 잘 갖춰져 있습니다. 몇 가지 영역을 더 채우면 완성됩니다.",
+       3:"알고 있는 것과 모르는 것이 섞여 있습니다. 체계적인 학습이 도움이 될 단계입니다.",
+       2:"경제 지식의 기초를 다지는 단계입니다. 핵심 개념부터 하나씩 채워가면 됩니다.",
+       1:"경제·투자에 대한 지식이 아직 부족합니다. 하지만 이것을 아는 것 자체가 시작입니다." },
+  3: { 5:"실행력이 뛰어나고 다양한 경험을 축적하고 있습니다. 경험이 자산이 되고 있습니다.",
+       4:"꾸준히 실행하고 있습니다. 경험의 깊이를 더하면 한 단계 올라갈 수 있습니다.",
+       3:"시작은 했지만 아직 깊이가 부족합니다. 지속성이 핵심입니다.",
+       2:"경험이 아직 초기 단계입니다. 작은 것부터 시작하는 것이 중요합니다.",
+       1:"아직 실행으로 옮긴 경험이 거의 없습니다. 가장 작은 행동 하나부터 시작해보세요." },
+  4: { 5:"배움을 삶에 적용하고 연결하는 능력이 뛰어납니다. 배움이 성장으로 이어지고 있습니다.",
+       4:"좋은 학습 습관을 가지고 있습니다. 비판적 사고와 연결형 독서를 더하면 완성됩니다.",
+       3:"배움에 관심은 있지만, 깊이 있는 학습까지는 이르지 못하고 있습니다.",
+       2:"학습의 시작 단계입니다. 한 권의 책을 깊이 읽는 것부터 시작해보세요.",
+       1:"배움의 습관이 아직 형성되지 않았습니다. 하지만 이 진단이 첫 번째 배움이 될 수 있습니다." }
+};
+const GRADE_LABEL = { 5:"매우 높음", 4:"높음", 3:"보통", 2:"낮음", 1:"매우 낮음" };
+
+/* ===================== 상태 ===================== */
+const STORAGE_KEY = 'bridge_freedom_diagnosis';
+let state = {
+  version: 1,
+  startTime: Date.now(),
+  currentQuestion: 0,
+  answers: {},
+  completed: false,
+  result: null,
+  unlocked: false,
+  shuffledChoices: {}
+};
+let resultType = null;
+let resultChartInstance = null;
+let insightChartInstance = null;
+
+/* ===================== 유틸 ===================== */
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function load() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) { return null; } }
+function reset() { localStorage.removeItem(STORAGE_KEY); }
+function shuffleArr(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); const el=document.getElementById(id); el.classList.add('active'); window.scrollTo(0,0); }
+function getGrade(score, max){ const r = score/max; if(r>=0.85) return 5; if(r>=0.65) return 4; if(r>=0.45) return 3; if(r>=0.25) return 2; return 1; }
+function trackEvent(name, params={}){ if (typeof gtag !== 'undefined') gtag('event', name, params); }
+
+/* ===================== 플로우 ===================== */
+function startDiagnosis(){
+  trackEvent('freedom_start');
+  state.startTime = Date.now();
+  state.currentQuestion = 0;
+  state.answers = {};
+  state.completed = false;
+  state.shuffledChoices = {};
+  save();
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q = questions[state.currentQuestion];
+  document.getElementById('qAxisLabel').textContent = `축 ${q.axis}. ${AXIS_NAMES[q.axis]}`;
+  document.getElementById('qIdLabel').textContent = '';
+  document.getElementById('qPrompt').textContent = q.prompt;
+  document.getElementById('qCount').textContent = `${state.currentQuestion+1} / ${questions.length}`;
+  document.getElementById('backBtn').disabled = state.currentQuestion === 0;
+
+  // Choices
+  let choices = q.choices;
+  if (q.randomize) {
+    if (!state.shuffledChoices[q.id]) state.shuffledChoices[q.id] = shuffleArr(q.choices.map((_,i)=>i));
+    choices = state.shuffledChoices[q.id].map(i => q.choices[i]);
+  }
+
+  const container = document.getElementById('qChoices');
+  container.innerHTML = '';
+  const existing = state.answers[q.id];
+  choices.forEach((c, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-button';
+    if (existing && existing.label === c.label) btn.classList.add('selected');
+    btn.innerHTML = `<span class="choice-label">${c.label}</span><span class="choice-text">${c.text}</span>`;
+    btn.addEventListener('click', () => selectChoice(q, c, btn));
+    container.appendChild(btn);
+  });
+
+  // Progress
+  const prog = (state.currentQuestion / questions.length) * 100;
+  document.getElementById('progressFill').style.width = prog + '%';
+
+  showScreen('screen-question');
+}
+
+function selectChoice(q, c, btn){
+  document.querySelectorAll('.choice-button').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.answers[q.id] = { choice: c.label, label: c.label, score: c.score ?? 0, tag: c.tag ?? null };
+  save();
+  setTimeout(() => advanceQuestion(), 300);
+}
+
+function advanceQuestion(){
+  const q = questions[state.currentQuestion];
+  const nextIdx = state.currentQuestion + 1;
+
+  // 축 완료 체크
+  const isAxisEnd = !questions[nextIdx] || questions[nextIdx].axis !== q.axis;
+
+  if (isAxisEnd) {
+    trackEvent(`freedom_p${q.axis}_complete`);
+    // 인사이트 브레이크 표시
+    showInsightBreak(q.axis, nextIdx);
+    return;
+  }
+  state.currentQuestion = nextIdx;
+  save();
+  document.getElementById('progressFill').style.width = ((state.currentQuestion / questions.length) * 100) + '%';
+  renderQuestion();
+}
+
+function goBack(){
+  if (state.currentQuestion === 0) return;
+  state.currentQuestion -= 1;
+  save();
+  renderQuestion();
+}
+
+/* ===================== 축 전환 ===================== */
+let pendingNextIndex = null;
+let pendingAxis = null;
+let axisTransitionTimer = null;
+
+function showAxisTransition(nextAxis, nextIdx){
+  pendingNextIndex = nextIdx;
+  pendingAxis = nextAxis;
+  document.getElementById('axisTransitionNum').textContent = `AXIS ${nextAxis}`;
+  document.getElementById('axisTransitionName').textContent = AXIS_NAMES[nextAxis];
+  document.getElementById('axisTransitionMsg').textContent = AXIS_TRANSITIONS[nextAxis];
+  showScreen('screen-axis-transition');
+  clearTimeout(axisTransitionTimer);
+  axisTransitionTimer = setTimeout(() => nextAfterAxisTransition(), 2000);
+}
+
+function nextAfterAxisTransition(){
+  clearTimeout(axisTransitionTimer);
+  if (pendingNextIndex === null) return;
+  state.currentQuestion = pendingNextIndex;
+  save();
+  pendingNextIndex = null;
+  renderQuestion();
+}
+
+/* ===================== 점수 산출 ===================== */
+function computeScores(){
+  const a = state.answers;
+  const get = id => (a[id]?.score ?? 0);
+  const axis1Score = get("P1-01") + get("P1-06") + get("P1-08");
+  const axis2Score = ["P2-01","P2-02","P2-03","P2-04","P2-05","P2-06","P2-07","P2-08","P2-09"].reduce((s,id)=>s+get(id),0);
+  const axis3Score = get("P3-03") + get("P3-04") + get("P3-06") + get("P3-07");
+  const axis4Score = get("P4-02") + get("P4-03") + get("P4-04") + get("P4-05") + get("P4-06");
+
+  const g1 = getGrade(axis1Score, 12);
+  const g2 = getGrade(axis2Score, 27);
+  const g3 = getGrade(axis3Score, 15);
+  const g4 = getGrade(axis4Score, 16);
+
+  return {
+    scores:{axis1Score,axis2Score,axis3Score,axis4Score},
+    grades:{g1,g2,g3,g4}
+  };
+}
+
+function classifyType(g1,g2,g3,g4){
+  if (g1<=2 && g2<=2 && g3<=2 && g4<=2) return "starter";
+  const arr=[g1,g2,g3,g4]; const mn=Math.min(...arr); const mx=Math.max(...arr);
+  if (mn>=3 && (mx-mn)<=1) return "balanced";
+  if ((g1>=3 || g2>=3) && g3<=2) {
+    if (g4>=3) return "bookworm";
+    return "knower";
+  }
+  if (g3>=3 && (g1<=2 || g2<=2)) return "doer";
+  if (g1>=4 && g2<=2 && g3<=2) return "visionary";
+  if (g4>=3 && g3<=2) return "bookworm";
+  const gpe = Math.abs(g1-g3); const gke = Math.abs(g2-g3);
+  if (gpe >= gke) return g1>g3 ? "knower" : "doer";
+  return g2>g3 ? "knower" : "doer";
+}
+
+/* ===================== 인사이트 브레이크 ===================== */
+function showInsightBreak(axisJustDone, nextIdx){
+  const { grades, scores } = computeScores();
+  const container = document.getElementById('insightContent');
+  container.innerHTML = '';
+
+  if (axisJustDone === 1) {
+    const purposeMap = {A:"수단", B:"보호", C:"해방", D:"존재"};
+    const timeMap = {A:"소비", B:"저축/절약", C:"학습", D:"투자 활동", E:"생각만"};
+    const p = purposeMap[state.answers["P1-08"]?.label] || "—";
+    const t = timeMap[state.answers["P1-09"]?.label] || "—";
+    container.innerHTML = `
+      <div class="insight-text">당신은 돈을 <span class="hl">"${p}"</span>(으)로 느끼면서,</div>
+      <div class="insight-text">실제로는 <span class="hl">"${t}"</span>에 시간을 쓰고 있습니다.</div>
+      <div class="insight-divider"></div>
+      <div class="insight-text small">그런데 —</div>
+      <div class="insight-tail">당신이 '안다고 생각하는 것'은<br>진짜 아는 것일까요?</div>
+    `;
+    document.getElementById('insightContinueBtn').textContent = '계속하기 →';
+  } else if (axisJustDone === 2) {
+    container.innerHTML = `
+      <div class="insight-text">당신의 경제 이해도는<br><span class="hl">"${GRADE_LABEL[grades.g2]}"</span> 수준입니다.</div>
+      <div class="insight-chart-wrap"><canvas id="insightChart" width="250" height="250"></canvas></div>
+      <div class="insight-text small">당신이 '원하는 것'과 '알고 있는 것' 사이에<br>이만큼의 간극이 있습니다.</div>
+      <div class="insight-divider"></div>
+      <div class="insight-tail">그런데 — 실제로 해본 것은<br>얼마나 될까요?</div>
+    `;
+    setTimeout(() => drawInsightRadar(['인식','지식','경험','학습'], [grades.g1, grades.g2, 0, 0]), 100);
+  } else if (axisJustDone === 3) {
+    container.innerHTML = `
+      <div class="insight-text">당신이 실제로 해온 것은<br><span class="hl">"${GRADE_LABEL[grades.g3]}"</span> 수준입니다.</div>
+      <div class="insight-chart-wrap"><canvas id="insightChart" width="250" height="250"></canvas></div>
+      <div class="insight-text small">원하는 것, 알고 있는 것, 해본 것 —<br>이 세 가지가 일치하는 사람은 많지 않습니다.</div>
+      <div class="insight-divider"></div>
+      <div class="insight-tail">마지막으로 — 당신은<br>어떻게 배우는 사람인가요?</div>
+    `;
+    setTimeout(() => drawInsightRadar(['인식','지식','경험','학습'], [grades.g1, grades.g2, grades.g3, 0]), 100);
+  } else if (axisJustDone === 4) {
+    container.innerHTML = `
+      <div class="insight-text">당신이 배우는 방식은<br><span class="hl">"${GRADE_LABEL[grades.g4]}"</span>입니다.</div>
+      <div class="insight-chart-wrap"><canvas id="insightChart" width="260" height="260"></canvas></div>
+      <div class="insight-text small">인식, 지식, 경험, 학습 —<br>네 가지가 모여 당신의 경제적 자유 여정의<br>현재 위치를 보여줍니다.</div>
+    `;
+    document.getElementById('insightContinueBtn').textContent = '당신의 결과를 확인하세요 →';
+    setTimeout(() => drawInsightRadar(['인식','지식','경험','학습'], [grades.g1, grades.g2, grades.g3, grades.g4]), 100);
+  }
+
+  pendingNextIndex = nextIdx;
+  pendingAxis = axisJustDone;
+  showScreen('screen-insight');
+}
+
+function drawInsightRadar(labels, data){
+  const ctx = document.getElementById('insightChart');
+  if (!ctx) return;
+  if (insightChartInstance) insightChartInstance.destroy();
+  insightChartInstance = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: 'rgba(201, 169, 110, 0.25)',
+        borderColor: '#C9A96E',
+        borderWidth: 2,
+        pointBackgroundColor: '#C9A96E',
+        pointBorderColor: '#FFFFFF',
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: false,
+      maintainAspectRatio: true,
+      scales: {
+        r: {
+          min: 0, max: 5,
+          ticks: { stepSize: 1, display: false, backdropColor: 'transparent' },
+          grid: { color: 'rgba(255,255,255,0.15)' },
+          angleLines: { color: 'rgba(255,255,255,0.15)' },
+          pointLabels: { color: '#FFFFFF', font: { size: 13, family: 'Pretendard' } }
+        }
+      },
+      plugins: { legend: { display: false }, tooltip: { enabled: false } }
+    }
+  });
+}
+
+function continueFromInsight(){
+  // 마지막 축이면 결과 페이지, 아니면 축 전환 화면
+  if (pendingNextIndex === null || pendingNextIndex >= questions.length) {
+    // 결과 페이지
+    finishDiagnosis();
+    return;
+  }
+  const nextAxis = questions[pendingNextIndex].axis;
+  showAxisTransition(nextAxis, pendingNextIndex);
+}
+
+/* ===================== 결과 페이지 ===================== */
+function finishDiagnosis(){
+  const { grades, scores } = computeScores();
+  resultType = classifyType(grades.g1, grades.g2, grades.g3, grades.g4);
+  // balanced stage 보정
+  let info = {...typeInfo[resultType]};
+  if (resultType === "balanced") {
+    const avg = (grades.g1 + grades.g2 + grades.g3 + grades.g4) / 4;
+    info.stage = avg >= 4 ? 5 : 4;
+  }
+
+  state.completed = true;
+  state.result = { type: resultType, grades, scores, stage: info.stage };
+  save();
+  trackEvent('freedom_result_view', { type: resultType, stage: info.stage });
+
+  document.getElementById('progressFill').style.width = '100%';
+
+  // 1페이지
+  document.getElementById('resultTypeName').textContent = info.name;
+  document.getElementById('resultMetaphor').textContent = info.metaphor;
+  document.getElementById('resultStage').textContent = `여정 ${info.stage}단계`;
+  document.getElementById('resultGap').textContent = getGapSummary(resultType);
+
+  // 2페이지
+  document.getElementById('resultDesc').textContent = info.description;
+
+  // Elapsed time
+  const elapsed = Math.max(1, Math.round((Date.now() - state.startTime) / 60000));
+  document.getElementById('elapsedNote').textContent = `이 진단에 ${elapsed}분을 투자하셨습니다.`;
+
+  // 차트
+  setTimeout(() => drawResultChart(grades), 150);
+
+  // Unlocked 체크
+  if (state.unlocked) renderUnlocked(grades, info);
+
+  showScreen('screen-result');
+}
+
+function getGapSummary(type){
+  const m = {
+    knower: "당신은 '아는 것'과 '하는 것' 사이에 간극이 있습니다.",
+    doer: "당신은 '하고 있는 것'과 '알고 있는 것' 사이에 간극이 있습니다.",
+    bookworm: "당신의 배움이 아직 삶의 변화로 이어지지 못하고 있습니다.",
+    starter: "당신의 여정은 이제 막 시작되려 하고 있습니다.",
+    balanced: "당신의 네 가지 영역이 균형 있게 성장하고 있습니다.",
+    visionary: "당신의 비전과 현실 사이에 간극이 있습니다."
+  };
+  return m[type] || "";
+}
+
+function drawResultChart(grades){
+  const ctx = document.getElementById('resultChart');
+  if (!ctx) return;
+  if (resultChartInstance) resultChartInstance.destroy();
+  resultChartInstance = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['인식', '지식', '경험', '학습'],
+      datasets: [{
+        data: [grades.g1, grades.g2, grades.g3, grades.g4],
+        backgroundColor: 'rgba(201, 169, 110, 0.28)',
+        borderColor: '#C9A96E',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#C9A96E',
+        pointBorderColor: '#FFFFFF',
+        pointRadius: 5,
+        pointBorderWidth: 2
+      }]
+    },
+    options: {
+      responsive: false,
+      maintainAspectRatio: true,
+      scales: {
+        r: {
+          min: 0, max: 5,
+          ticks: { stepSize: 1, display: false, backdropColor: 'transparent' },
+          grid: { color: 'rgba(255,255,255,0.15)' },
+          angleLines: { color: 'rgba(255,255,255,0.15)' },
+          pointLabels: { color: '#FFFFFF', font: { size: 14, family: 'Pretendard', weight: '600' } }
+        }
+      },
+      plugins: { legend: { display: false }, tooltip: { enabled: false } }
+    }
+  });
+}
+
+/* ===================== 가입/잠금 해제 ===================== */
+function signupClick(){
+  trackEvent('freedom_signup_click', { type: resultType });
+  state.unlocked = true;
+  save();
+  window.open(CAFE_URL, '_blank');
+  // 잠금 해제 콘텐츠 표시
+  const info = {...typeInfo[resultType]};
+  if (resultType === "balanced" && state.result) info.stage = state.result.stage;
+  renderUnlocked(state.result.grades, info);
+  document.getElementById('lockBox').style.display = 'none';
+}
+
+function renderUnlocked(grades, info){
+  document.getElementById('unlockedContent').style.display = 'block';
+  document.getElementById('lockBox').style.display = 'none';
+  document.getElementById('needText').textContent = info.need;
+
+  // 축별 상세
+  const axisBox = document.getElementById('axisDetails');
+  axisBox.innerHTML = '';
+  [[1,'인식',grades.g1],[2,'지식',grades.g2],[3,'경험',grades.g3],[4,'학습',grades.g4]].forEach(([n,name,g]) => {
+    const el = document.createElement('div');
+    el.className = 'axis-detail';
+    el.innerHTML = `
+      <div class="axis-detail-head">
+        <div class="axis-detail-name">${name}</div>
+        <div class="axis-detail-grade">${GRADE_LABEL[g]}</div>
+      </div>
+      <div class="axis-detail-body">${axisInterpretation[n][g]}</div>
+    `;
+    axisBox.appendChild(el);
+  });
+
+  // 교차 검증
+  const crossBox = document.getElementById('crossDetails');
+  crossBox.innerHTML = '';
+  const popova = getPopovaGapMessage(state.answers["P1-03"]?.tag, state.answers["P3-08"]?.tag);
+  const dk = getDunningKrugerMessage(state.answers["P4-07"]?.tag, grades.g2);
+  const aspTag = state.answers["P1-06"]?.tag;
+  const planTag = state.answers["P1-07"]?.tag;
+  const aligned = aspTag && planTag && aspTag === planTag;
+  const alignMsg = aligned
+    ? "되고 싶은 모습과 실제 행동 계획이 일치하고 있습니다."
+    : "되고 싶은 모습과 실제 행동 계획 사이에 차이가 있습니다.";
+  [popova, dk, alignMsg].forEach(msg => {
+    const el = document.createElement('div');
+    el.className = 'cross-item';
+    el.textContent = msg;
+    crossBox.appendChild(el);
+  });
+
+  // 책
+  const booksBox = document.getElementById('booksList');
+  booksBox.innerHTML = '';
+  info.books.forEach((b, i) => {
+    const el = document.createElement('div');
+    el.className = 'book-item';
+    el.innerHTML = `
+      <div class="book-title"><span class="book-title-num">${i+1}.</span>${b.title}</div>
+      <div class="book-reason">${b.reason}</div>
+    `;
+    booksBox.appendChild(el);
+  });
+
+  // MH
+  document.getElementById('mhMsg').textContent = info.mhMessage;
+}
+
+function getPopovaGapMessage(emotion, action){
+  if (!emotion || !action) return "감정과 행동 사이의 연결을 살펴볼 필요가 있습니다.";
+  if (emotion === "Status" && action === "무행동") return "자극은 받지만 행동으로 이어지지 않는 패턴이 있습니다.";
+  if (emotion === "Worship" && action === "탐색") return "관심은 있지만 실행까지는 가지 않는 경향이 있습니다.";
+  if (emotion === "Vigilance" && action === "무행동") return "걱정이 행동을 막고 있을 수 있습니다.";
+  if (action === "실행" || action === "관계행동") return "감정이 행동으로 이어지는 실행력을 가지고 있습니다.";
+  return "감정과 행동 사이의 연결을 살펴볼 필요가 있습니다.";
+}
+
+function getDunningKrugerMessage(self, actual){
+  const map = { "초보":1, "기본":2, "중급":3, "전문":4, "고립": null };
+  if (self === "고립") return "주변에 대화 상대가 없어 자기 수준을 확인하기 어려운 상태입니다.";
+  const sl = map[self]; if (sl == null) return "자기 인식을 확인하기 어렵습니다.";
+  const gap = sl - actual;
+  if (gap >= 2) return "실제 지식보다 자기 평가가 높은 편입니다. 모르는 것을 모르는 상태일 수 있습니다.";
+  if (gap <= -2) return "실제 지식에 비해 자기 평가가 낮은 편입니다. 스스로를 과소평가하고 있을 수 있습니다.";
+  return "자기 인식과 실제 수준이 비교적 일치합니다.";
+}
+
+/* ===================== 공유 / 재시작 ===================== */
+function shareResult(){
+  const info = typeInfo[resultType];
+  const stage = state.result?.stage || info.stage;
+  const text = `나는 "${info.name}" — ${info.metaphor}. 여정 ${stage}단계.\n나는 경제적 자유에 얼마나 가까운가?`;
+  const shareData = { title: '경제적 자유 진단 결과', text, url: window.location.href };
+  if (navigator.share) {
+    navigator.share(shareData).catch(()=>{});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text + '\n' + window.location.href);
+    alert('결과가 복사되었습니다!');
+  } else {
+    alert(text);
+  }
+}
+
+function restartDiagnosis(){
+  if (!confirm('다시 진단하시겠습니까? 현재 결과가 초기화됩니다.')) return;
+  reset();
+  state = {
+    version: 1, startTime: Date.now(), currentQuestion: 0,
+    answers: {}, completed: false, result: null, unlocked: false, shuffledChoices: {}
+  };
+  resultType = null;
+  showScreen('screen-start');
+  document.getElementById('progressFill').style.width = '0%';
+}
+
+/* ===================== 초기화 / 복구 ===================== */
+(function init(){
+  const saved = load();
+  if (saved) {
+    state = Object.assign(state, saved);
+    if (state.completed && state.result) {
+      resultType = state.result.type;
+      finishDiagnosis();
+      if (state.unlocked) {
+        const info = {...typeInfo[resultType]};
+        if (state.result.stage) info.stage = state.result.stage;
+        renderUnlocked(state.result.grades, info);
+      }
+      return;
+    }
+    if (Object.keys(state.answers).length > 0 && state.currentQuestion < questions.length) {
+      renderQuestion();
+      return;
+    }
+  }
+  showScreen('screen-start');
+})();
+</script>
+</body>
+</html>
