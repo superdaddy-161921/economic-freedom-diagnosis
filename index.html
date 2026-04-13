@@ -7,6 +7,13 @@
 <meta property="og:title" content="경제적 자유 진단">
 <meta property="og:description" content="나는 경제적 자유에 얼마나 가까운가? 34개의 질문으로 당신의 현재 위치를 진단합니다.">
 <meta property="og:type" content="website">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KJNV6DHSGC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-KJNV6DHSGC');
+</script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
@@ -283,7 +290,7 @@ button { font-family: inherit; }
 <!-- Question -->
 <section class="screen question-screen" id="screen-question">
   <div class="q-header">
-    <span class="q-axis" id="qAxisLabel">축 1. 인식</span>
+    <span class="q-axis" id="qAxisLabel">Part 1 · 인식</span>
     <span id="qIdLabel"></span>
   </div>
   <h2 class="q-prompt" id="qPrompt"></h2>
@@ -313,6 +320,16 @@ button { font-family: inherit; }
   </div>
   <div class="result-body">
     <div class="result-desc" id="resultDesc"></div>
+
+    <!-- Code Input (shown after clicking CTA) -->
+    <div class="lock-box" id="codeBox" style="display:none; background: var(--navy); color: var(--white);">
+      <div class="lock-title" style="color: var(--gold); font-size: 17px; text-align: center;">🔓 잠금 해제 코드를 입력하세요</div>
+      <div class="lock-prompt" style="color:#cfd4de; text-align:center; margin-top:8px;">카페에 가입하시면 환영 메시지에서<br>잠금 해제 코드를 확인할 수 있습니다.</div>
+      <input id="unlockCodeInput" type="text" maxlength="12" placeholder="코드 입력" style="width:100%; padding:14px 16px; margin:16px 0 8px; border-radius:10px; border:1px solid var(--gray-300); background:#fff; color:var(--gray-800); font-size:16px; font-family:inherit; text-align:center; letter-spacing:2px;">
+      <div id="unlockCodeError" style="color:#ffb4a6; font-size:13px; min-height:18px; text-align:center; margin-bottom:10px;"></div>
+      <button class="cta-button" onclick="verifyUnlockCode()">잠금 해제하기</button>
+      <div class="lock-footer" style="color:#cfd4de; margin-top:14px;">아직 가입 전이신가요?<br><a href="https://cafe.naver.com/sd161921" target="_blank" style="color:var(--gold); text-decoration:underline;">카페 가입하기 →</a></div>
+    </div>
 
     <!-- Locked -->
     <div class="lock-box" id="lockBox">
@@ -363,7 +380,8 @@ button { font-family: inherit; }
 
 <script>
 /* ===================== 데이터 ===================== */
-const CAFE_URL = "https://cafe.naver.com/bridgecommunity";
+const CAFE_URL = "https://cafe.naver.com/sd161921";
+const UNLOCK_CODE = "BRIDGE";
 
 const questions = [
   // 축 1 (인식) — 출현 순서: P1-01 → P1-02 → P1-03 → P1-04 → P1-05 → P1-06 → P1-07 → P1-08 → P1-10 → P1-09
@@ -502,12 +520,12 @@ const questions = [
       {label:"C", text:"은행에 넣어두는 게 가장 안전한 방법이다", score:1},
       {label:"D", text:"이런 계산을 해본 적 없다", score:0}
     ]},
-  { id:"P2-09", axis:2, prompt:'두 사람이 각자 사업을 합니다.\n첫째는 "매달 매출이 3,000만원"이라 하고, 둘째는 "매달 순이익이 300만원"이라 합니다.\n\n누구의 사업이 더 잘 되고 있는지 판단할 수 있나요?',
+  { id:"P2-09", axis:2, prompt:'친구 두 명이 각각 사업을 시작한 지 1년이 됐습니다.\n첫째는 "매달 매출이 꽤 나와"라고 하고,\n둘째는 "아직 매출은 작지만, 매달 남는 돈이 생겨"라고 합니다.\n\n1년 뒤, 누가 더 유리한 위치에 있을까요?',
     choices:[
-      {label:"A", text:"매출이 높은 첫째가 더 잘 되고 있다", score:1},
-      {label:"B", text:"순이익을 말하는 둘째가 더 정확히 알고 있는 것이다", score:2},
-      {label:"C", text:"첫째의 비용을 모르니 비교할 수 없다", score:3},
-      {label:"D", text:"사업 경험이 없어서 판단하기 어렵다", score:0}
+      {label:"A", text:"매출이 큰 첫째 — 규모가 크면 기회가 많다", score:2},
+      {label:"B", text:"남는 돈이 있는 둘째 — 실제로 돈이 쌓이고 있으니까", score:3},
+      {label:"C", text:"더 많은 정보가 필요하다 — 매출 크기나 비용 구조를 모르면 판단할 수 없다", score:3},
+      {label:"D", text:"사업은 해봐야 안다 — 1년으로는 판단하기 어렵다", score:1}
     ]},
 
   // 축 3 (경험) — 출현 순서: P3-01 → P3-03 → P3-02 → P3-04 → P3-05 → P3-06 → P3-07 → P3-08
@@ -535,13 +553,13 @@ const questions = [
       {label:"D", text:"비상금으로 따로 모아둔 돈이 있어서 거기서 쓴다", tag:"비상금"},
       {label:"E", text:"크게 고민되지 않는다 — 이 정도는 여유가 있다", tag:"여유"}
     ]},
-  { id:"P3-04", axis:3, prompt:'몇 달 동안 모은 돈으로 투자를 했는데, 예상과 다르게 손실이 났습니다.\n(투자 경험이 없다면, 저축 목표를 못 맞추거나 큰 지출이 생긴 상황을 떠올려보세요.)\n\n그 상황에서 당신의 반응에 가장 가까운 것은?',
+  { id:"P3-04", axis:3, prompt:'돈과 관련해서 계획대로 되지 않은 경험을 떠올려보세요.\n저축이 깨졌거나, 예상 밖의 큰 지출이 생겼거나, 투자에서 손실을 본 경우 등.\n\n그때 당신의 반응에 가장 가까운 것은?',
     choices:[
-      {label:"A", text:"당분간 돈 이야기를 생각하고 싶지 않다", score:1},
-      {label:"B", text:"왜 이렇게 됐는지 알아보지만, 일단 손을 뗀다", score:2},
-      {label:"C", text:"방법이 잘못됐다고 판단하고 다른 방식을 찾아본다", score:3},
-      {label:"D", text:"원래 계획대로 유지한다 — 단기 변동은 신경 쓰지 않는다", score:3},
-      {label:"E", text:"이런 경험을 해본 적이 없다", score:0}
+      {label:"A", text:"당분간 돈 생각을 피했다", score:1},
+      {label:"B", text:"원인을 찾아봤지만, 당장은 방법을 바꾸지 않았다", score:2},
+      {label:"C", text:"방법을 바꿨다 — 지출, 저축, 투자 방식 중 하나를 조정했다", score:3},
+      {label:"D", text:"원래 방향을 유지했다 — 일시적인 일이라 판단했다", score:3},
+      {label:"E", text:"이런 경험이 아직 없다 — 계획을 세운 적이 없어서", score:0}
     ]},
   { id:"P3-05", axis:3, prompt:'돈이나 경제에 대해 더 알고 싶다는 생각이 들었을 때,\n실제로 한 행동에 가장 가까운 것은?',
     choices:[
@@ -584,13 +602,13 @@ const questions = [
       {label:"D", text:"평소에 이런 내용을 찾아보는 편이라", tag:"자발적"},
       {label:"E", text:"아직 접해본 적이 없다", tag:"미시작"}
     ]},
-  { id:"P4-02", axis:4, prompt:'좋은 책(또는 콘텐츠)을 읽었습니다.\n주변 사람이 "그거 어때?"라고 물어봅니다.\n\n당신의 반응에 가장 가까운 것은?',
+  { id:"P4-02", axis:4, prompt:'좋은 책(또는 콘텐츠)을 읽었습니다.\n읽고 난 뒤에 실제로 한 것에 가장 가까운 것은?',
     choices:[
-      {label:"A", text:'"괜찮았어" 정도로 짧게 답한다', score:1},
-      {label:"B", text:"인상 깊었던 내용을 한두 가지 이야기해준다", score:2},
-      {label:"C", text:'"이 부분이 내 상황이랑 비슷해서 이렇게 해보려고" 라고 말한다', score:3},
-      {label:"D", text:'"근데 이 부분은 좀 아쉬웠어" 라고 비판적 의견도 함께 말한다', score:3},
-      {label:"E", text:"책이나 콘텐츠를 거의 보지 않아서 이런 상황이 없다", score:0}
+      {label:"A", text:"좋았다는 느낌은 있지만, 특별히 한 것은 없다", score:1},
+      {label:"B", text:"인상 깊었던 내용을 주변 사람에게 이야기했다", score:2},
+      {label:"C", text:"읽은 내용을 바탕으로 뭔가를 실행해봤다", score:3},
+      {label:"D", text:"읽은 내용을 정리하거나 메모해두고 다시 볼 수 있게 했다", score:3},
+      {label:"E", text:"책이나 콘텐츠를 거의 보지 않는다", score:0}
     ]},
   { id:"P4-03", axis:4, prompt:'두 권의 책에서 정반대 주장을 읽었습니다.\n한 책은 "집중 투자가 답이다", 다른 책은 "반드시 분산해야 한다"고 합니다.\n\n당신의 반응에 가장 가까운 것은?',
     choices:[
@@ -732,7 +750,7 @@ const axisInterpretation = {
        2:"학습의 시작 단계입니다. 한 권의 책을 깊이 읽는 것부터 시작해보세요.",
        1:"배움의 습관이 아직 형성되지 않았습니다. 하지만 이 진단이 첫 번째 배움이 될 수 있습니다." }
 };
-const GRADE_LABEL = { 5:"매우 높음", 4:"높음", 3:"보통", 2:"낮음", 1:"매우 낮음" };
+const GRADE_LABEL = { 5:"깊은 단계", 4:"성숙 단계", 3:"성장 단계", 2:"기초 단계", 1:"시작 단계" };
 
 /* ===================== 상태 ===================== */
 const STORAGE_KEY = 'bridge_freedom_diagnosis';
@@ -773,7 +791,7 @@ function startDiagnosis(){
 
 function renderQuestion(){
   const q = questions[state.currentQuestion];
-  document.getElementById('qAxisLabel').textContent = `축 ${q.axis}. ${AXIS_NAMES[q.axis]}`;
+  document.getElementById('qAxisLabel').textContent = `Part ${q.axis} · ${AXIS_NAMES[q.axis]}`;
   document.getElementById('qIdLabel').textContent = '';
   document.getElementById('qPrompt').textContent = q.prompt;
   document.getElementById('qCount').textContent = `${state.currentQuestion+1} / ${questions.length}`;
@@ -907,12 +925,12 @@ function showInsightBreak(axisJustDone, nextIdx){
   container.innerHTML = '';
 
   if (axisJustDone === 1) {
-    const purposeMap = {A:"수단", B:"보호", C:"해방", D:"존재"};
-    const timeMap = {A:"소비", B:"저축/절약", C:"학습", D:"투자 활동", E:"생각만"};
+    const purposeMap = {A:"소비의 자유", B:"가족의 안전", C:"시간의 자유", D:"자기실현"};
+    const timeMap = {A:"소비 활동", B:"저축과 절약", C:"경제 공부", D:"투자 활동", E:"생각은 많이 하지만 구체적 행동은 없는 상태"};
     const p = purposeMap[state.answers["P1-08"]?.label] || "—";
     const t = timeMap[state.answers["P1-09"]?.label] || "—";
     container.innerHTML = `
-      <div class="insight-text">당신은 돈을 <span class="hl">"${p}"</span>(으)로 느끼면서,</div>
+      <div class="insight-text">당신은 돈을 <span class="hl">"${p}"</span>의 도구로 느끼면서,</div>
       <div class="insight-text">실제로는 <span class="hl">"${t}"</span>에 시간을 쓰고 있습니다.</div>
       <div class="insight-divider"></div>
       <div class="insight-text small">그런데 —</div>
@@ -1089,14 +1107,31 @@ function drawResultChart(grades){
 /* ===================== 가입/잠금 해제 ===================== */
 function signupClick(){
   trackEvent('freedom_signup_click', { type: resultType });
-  state.unlocked = true;
-  save();
   window.open(CAFE_URL, '_blank');
-  // 잠금 해제 콘텐츠 표시
-  const info = {...typeInfo[resultType]};
-  if (resultType === "balanced" && state.result) info.stage = state.result.stage;
-  renderUnlocked(state.result.grades, info);
   document.getElementById('lockBox').style.display = 'none';
+  const codeBox = document.getElementById('codeBox');
+  codeBox.style.display = 'block';
+  const input = document.getElementById('unlockCodeInput');
+  input.value = '';
+  document.getElementById('unlockCodeError').textContent = '';
+  setTimeout(() => { input.focus(); codeBox.scrollIntoView({behavior:'smooth', block:'center'}); }, 50);
+  input.onkeydown = (e) => { if (e.key === 'Enter') verifyUnlockCode(); };
+}
+
+function verifyUnlockCode(){
+  const input = document.getElementById('unlockCodeInput');
+  const errEl = document.getElementById('unlockCodeError');
+  const val = (input.value || '').trim().toUpperCase();
+  if (val === UNLOCK_CODE) {
+    state.unlocked = true;
+    save();
+    const info = {...typeInfo[resultType]};
+    if (resultType === "balanced" && state.result) info.stage = state.result.stage;
+    document.getElementById('codeBox').style.display = 'none';
+    renderUnlocked(state.result.grades, info);
+  } else {
+    errEl.textContent = '코드가 일치하지 않습니다. 카페 환영 메시지를 확인해주세요.';
+  }
 }
 
 function renderUnlocked(grades, info){
