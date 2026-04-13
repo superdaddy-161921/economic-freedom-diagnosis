@@ -519,7 +519,7 @@ const questions = [
       {label:"A", text:"운이 좋았네. 다음엔 어떻게 될지 모르지.", tag:"Vigilance"},
       {label:"B", text:"나도 해볼까... 방법을 알아봐야겠다.", tag:"Worship"},
       {label:"C", text:"솔직히 자극이 된다. 나도 뭔가 해야 하나 싶다.", tag:"Status"},
-      {label:"D", text:"잘됐다. 근데 내 방식대로 하는 게 맞아.", tag:"자기확신"}
+      {label:"D", text:"잘됐다. 나는 내 계획대로 가련다.", tag:"자기확신"}
     ]},
   { id:"P1-04", axis:1, prompt:'하루 중 무의식적으로 하게 되는 행동이 있습니다.\n돈과 관련해서, 당신이 가장 자주 하는 것에 가까운 것은?',
     choices:[
@@ -577,7 +577,7 @@ const questions = [
     ]},
 
   // 축 2 (지식) — 출현 순서: P2-01 → P2-02 → P2-03 → P2-04 → P2-05 → P2-06 → P2-08 → P2-07 → P2-09
-  { id:"P2-01", axis:2, prompt:'친구가 말합니다.\n"나 자산이 5억이야. 대출이 3억 있긴 한데, 차도 바꾸고 싶고 여행도 가고 싶어."\n\n당신이라면 뭐라고 하겠습니까?',
+  { id:"P2-01", axis:2, prompt:'친구가 말합니다.\n"나 자산이 5억이야. 대출이 3억 있긴 한데, 이번에 차 바꾸고 해외여행도 가려고. 괜찮겠지?"\n\n당신이라면 뭐라고 하겠습니까?',
     choices:[
       {label:"A", text:"5억이면 넉넉하니까 좀 써도 되지 않을까", score:1},
       {label:"B", text:"대출 3억 빼면 2억인데, 좀 조심하는 게 낫지 않아?", score:2},
@@ -926,7 +926,8 @@ function renderQuestion(){
     const btn = document.createElement('button');
     btn.className = 'choice-button';
     if (existing && existing.label === c.label) btn.classList.add('selected');
-    btn.innerHTML = `<span class="choice-label">${c.label}</span><span class="choice-text">${c.text}</span>`;
+    const posLabels = ['A','B','C','D','E','F'];
+    btn.innerHTML = `<span class="choice-label">${posLabels[idx]}</span><span class="choice-text">${c.text}</span>`;
     btn.addEventListener('click', () => selectChoice(q, c, btn));
     container.appendChild(btn);
   });
