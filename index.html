@@ -157,7 +157,15 @@ button { font-family: inherit; }
 .choice-button.selected .choice-label { background: var(--gold); color: var(--white); }
 .choice-text { flex: 1; }
 
-.q-nav { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 16px; }
+.q-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  position: sticky; bottom: 0;
+  margin-top: auto;
+  padding: 12px 0 16px;
+  background: var(--white);
+  border-top: 1px solid var(--gray-300);
+  z-index: 50;
+}
 .back-btn {
   background: none; border: none;
   color: var(--gray-500);
@@ -607,12 +615,12 @@ const questions = [
       {label:"C", text:"얼마를 쓰고 얼마를 모으느냐가 중요하지, 소득 종류는 상관없다", score:2},
       {label:"D", text:"이런 비교를 해본 적 없다", score:0}
     ]},
-  { id:"P2-05", axis:2, prompt:'매달 50만원을 연 7% 수익률로 20년간 투자하면,\n넣은 돈의 총액은 1억 2,000만원입니다.\n\n20년 뒤 총액은 대략 얼마일까요?',
+  { id:"P2-05", axis:2, prompt:'두 사람이 같은 금액을 매달 투자합니다.\n첫째는 25살에 시작해서 35살에 멈췄고(10년간),\n둘째는 35살에 시작해서 65살까지 계속했습니다(30년간).\n\n65살이 됐을 때, 누가 더 많을까요?',
     choices:[
-      {label:"A", text:"약 1억 5,000만원 (조금 더 불어남)", score:1},
-      {label:"B", text:"약 2억 원 (거의 두 배)", score:2},
-      {label:"C", text:"약 2억 6,000만원 (두 배 이상)", score:3},
-      {label:"D", text:"감이 잘 안 온다", score:0}
+      {label:"A", text:"당연히 둘째 — 30년이 10년의 세 배니까", score:1},
+      {label:"B", text:"둘째가 많겠지만 차이는 생각보다 작을 것이다", score:2},
+      {label:"C", text:"비슷하거나 오히려 첫째가 많을 수도 있다", score:3},
+      {label:"D", text:"잘 모르겠다", score:0}
     ]},
   { id:"P2-06", axis:2, prompt:'1,000만원을 투자하려고 합니다.\n당신의 판단에 가장 가까운 것은?',
     choices:[
@@ -680,7 +688,7 @@ const questions = [
     choices:[
       {label:"A", text:"아직 그런 생각이 들어본 적 없다", tag:"미시작"},
       {label:"B", text:"유튜브나 SNS에서 관련 내용을 찾아본다", tag:"콘텐츠"},
-      {label:"C", text:"책, 강의, 스터디 등 체계적으로 배운 적 있다", tag:"체계적"},
+      {label:"C", text:"책을 읽거나, 강의를 듣거나, 스터디에 참여한 적 있다", tag:"체계적"},
       {label:"D", text:"이미 하고 있는 사람을 찾아가서 물어본다", tag:"관계기반"}
     ]},
   { id:"P3-06", axis:3, randomize:true, prompt:'경제적 목표를 구체적으로 세워본 적이 있나요?',
@@ -925,6 +933,7 @@ function renderQuestion(){
   choices.forEach((c, idx) => {
     const btn = document.createElement('button');
     btn.className = 'choice-button';
+    btn.classList.remove('selected');
     if (existing && existing.label === c.label) btn.classList.add('selected');
     const posLabels = ['A','B','C','D','E','F'];
     btn.innerHTML = `<span class="choice-label">${posLabels[idx]}</span><span class="choice-text">${c.text}</span>`;
@@ -985,8 +994,6 @@ function showAxisTransition(nextAxis, nextIdx){
   document.getElementById('axisTransitionName').textContent = AXIS_NAMES[nextAxis];
   document.getElementById('axisTransitionMsg').textContent = AXIS_TRANSITIONS[nextAxis];
   showScreen('screen-axis-transition');
-  clearTimeout(axisTransitionTimer);
-  axisTransitionTimer = setTimeout(() => nextAfterAxisTransition(), 2000);
 }
 
 function nextAfterAxisTransition(){
