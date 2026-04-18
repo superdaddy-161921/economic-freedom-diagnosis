@@ -142,8 +142,10 @@ button { font-family: inherit; }
   transition: all 0.2s ease;
   font-family: inherit;
 }
-.choice-button:hover { border-color: var(--gold); background: var(--gold-light); }
-.choice-button.selected { border-color: var(--gold); background: var(--gold-light); font-weight: 600; }
+@media (hover: hover) and (pointer: fine) {
+  .choice-button:hover { border-color: var(--gold); background: var(--gold-light); }
+}
+.choice-button.selected { border-color: var(--gold); background: var(--gold-light); font-weight: 600; box-shadow: 0 0 0 1px var(--gold); }
 .choice-label {
   flex-shrink: 0;
   width: 24px; height: 24px;
@@ -929,6 +931,8 @@ function renderQuestion(){
 
   const container = document.getElementById('qChoices');
   container.innerHTML = '';
+  container.style.pointerEvents = 'none';
+  setTimeout(() => { container.style.pointerEvents = 'auto'; }, 50);
   const existing = state.answers[q.id];
   choices.forEach((c, idx) => {
     const btn = document.createElement('button');
