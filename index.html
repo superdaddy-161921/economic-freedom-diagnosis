@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>경제적 자유 진단</title>
 <meta property="og:title" content="경제적 자유 진단 — 나는 경제적 자유에 얼마나 가까운가?">
-<meta property="og:description" content="34개 질문으로 인식·지식·경험·독서학습 4가지 영역을 진단합니다. 당신이 '안다고 생각하는 것'과 '실제로 하고 있는 것'의 간극을 발견하세요.">
+<meta property="og:description" content="38개 질문으로 인식·지식(폭+깊이)·경험·독서학습을 진단합니다. 당신이 '안다고 생각하는 것'과 '실제로 적용해온 것'의 간극을 발견하세요.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://superdaddy-161921.github.io/economic-freedom-diagnosis/">
 <meta property="og:image" content="https://superdaddy-161921.github.io/economic-freedom-diagnosis/og-image.png">
@@ -14,7 +14,7 @@
 <meta property="og:site_name" content="성공을 디자인하라">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="경제적 자유 진단">
-<meta name="twitter:description" content="34개 질문으로 당신의 현재 위치를 진단합니다.">
+<meta name="twitter:description" content="38개 질문으로 당신의 현재 위치를 진단합니다.">
 <meta name="twitter:image" content="https://superdaddy-161921.github.io/economic-freedom-diagnosis/og-image.png">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-KJNV6DHSGC"></script>
 <script>
@@ -126,6 +126,80 @@ button { font-family: inherit; }
   animation: slideInRight 0.3s ease-out;
 }
 .q-choices { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+/* v11: scenario card (P2-02·08 시나리오 추론) */
+.q-scenario {
+  margin: 0 0 20px;
+  padding: 16px 18px;
+  background: rgba(201, 169, 110, 0.08);
+  border-left: 3px solid var(--gold);
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: pre-wrap;
+  animation: slideInRight 0.3s ease-out;
+}
+/* v11: fact_then_frequency step1 잠금 표시 */
+.q-step-fact {
+  margin: 0 0 20px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(201, 169, 110, 0.18);
+  border-radius: 6px;
+}
+.step-fact-prompt {
+  font-size: 14px; line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 6px;
+  white-space: pre-wrap;
+}
+.step-fact-answer {
+  font-size: 13px; font-weight: 600;
+  color: var(--gold);
+}
+.step-skip-note {
+  text-align: center; padding: 24px;
+  font-size: 14px; color: rgba(255, 255, 255, 0.6);
+}
+/* v11: 결과 페이지 분류 태그 위계 없음 disclaimer */
+.result-tag-disclaimer {
+  margin: 24px 0;
+  padding: 16px 20px;
+  background: rgba(201, 169, 110, 0.08);
+  border-left: 3px solid rgba(201, 169, 110, 0.5);
+  border-radius: 4px;
+}
+.result-tag-disclaimer-text {
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0;
+}
+.result-tag-disclaimer-text strong {
+  color: var(--gold);
+  font-weight: 600;
+}
+/* v11: shifter 부적 케이스 안내 */
+.shifter-note {
+  margin: 0 0 32px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(201, 169, 110, 0.3);
+  border-radius: 8px;
+}
+.shifter-note-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+.shifter-note-body {
+  font-size: 14px;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 12px 0;
+}
+.shifter-note-body:last-child { margin-bottom: 0; }
 .choice-button {
   display: flex; align-items: flex-start; gap: 12px;
   width: 100%;
@@ -378,7 +452,9 @@ button { font-family: inherit; }
     <span class="q-axis" id="qAxisLabel">Part 1 · 인식</span>
     <span id="qIdLabel"></span>
   </div>
+  <div class="q-scenario" id="qScenario" style="display:none;"></div>
   <h2 class="q-prompt" id="qPrompt"></h2>
+  <div class="q-step-fact" id="qStepFact" style="display:none;"></div>
   <div class="q-choices" id="qChoices"></div>
   <div class="q-nav">
     <button class="back-btn" id="backBtn" onclick="goBack()">← 이전</button>
@@ -408,6 +484,15 @@ button { font-family: inherit; }
   </div>
   <div class="result-body">
     <div class="result-desc" id="resultDesc"></div>
+
+    <!-- 분류 태그 위계 없음 disclaimer (v11) -->
+    <div class="result-tag-disclaimer">
+      <p class="result-tag-disclaimer-text">
+        이 진단의 분류 태그(머니 마인드, Purpose Layer, 자유의 정의 등)에는
+        <strong>위계가 없습니다</strong>. 어떤 답이 더 우월하지 않습니다 —
+        각자 다른 길을 걷는 출발점일 뿐입니다.
+      </p>
+    </div>
 
     <!-- Code Input (shown after clicking CTA) -->
     <div class="lock-box" id="codeBox" style="display:none;">
@@ -470,6 +555,9 @@ button { font-family: inherit; }
 
     <!-- Unlocked -->
     <div id="unlockedContent" style="display:none;">
+      <!-- shifter (부적 케이스) 안내 — v11, shifter 유형일 때만 표시 -->
+      <div id="shifterNote" class="shifter-note" style="display:none;"></div>
+
       <div class="unlocked-section">
         <div class="section-title">당신에게 필요한 건</div>
         <div class="need-text" id="needText"></div>
@@ -1042,17 +1130,49 @@ function renderQuestion(){
   const q = questions[state.currentQuestion];
   document.getElementById('qAxisLabel').textContent = `Part ${q.axis} · ${AXIS_NAMES[q.axis]}`;
   document.getElementById('qIdLabel').textContent = '';
-  document.getElementById('qPrompt').textContent = q.prompt;
   document.getElementById('qCount').textContent = `${state.currentQuestion+1} / ${questions.length}`;
   document.getElementById('backBtn').disabled = state.currentQuestion === 0;
 
-  // Choices
+  // Scenario card (scenario_inference)
+  const scenarioEl = document.getElementById('qScenario');
+  if (q.scenario) {
+    scenarioEl.innerHTML = q.scenario.replace(/\n/g, '<br>');
+    scenarioEl.style.display = '';
+  } else {
+    scenarioEl.style.display = 'none';
+    scenarioEl.innerHTML = '';
+  }
+
+  // Step1 fact-confirmation area
+  const stepFactEl = document.getElementById('qStepFact');
+  stepFactEl.style.display = 'none';
+  stepFactEl.innerHTML = '';
+
+  // Progress
+  const prog = (state.currentQuestion / questions.length) * 100;
+  document.getElementById('progressFill').style.width = prog + '%';
+
+  // fact_then_frequency 분기: step1 → step2
+  if (q.type === 'fact_then_frequency') {
+    renderFactThenFrequency(q);
+    showScreen('screen-question');
+    return;
+  }
+
+  // 일반 형식: prompt + choices
+  document.getElementById('qPrompt').innerHTML = (q.prompt || '').replace(/\n/g, '<br>');
+
   let choices = q.choices;
   if (q.randomize) {
     if (!state.shuffledChoices[q.id]) state.shuffledChoices[q.id] = shuffleArr(q.choices.map((_,i)=>i));
     choices = state.shuffledChoices[q.id].map(i => q.choices[i]);
   }
 
+  renderChoiceButtons(q, choices, false);
+  showScreen('screen-question');
+}
+
+function renderChoiceButtons(q, choices, isStep2){
   const container = document.getElementById('qChoices');
   container.innerHTML = '';
   container.style.pointerEvents = 'none';
@@ -1061,29 +1181,116 @@ function renderQuestion(){
   choices.forEach((c, idx) => {
     const btn = document.createElement('button');
     btn.className = 'choice-button';
-    btn.classList.remove('selected');
-    if (existing && existing.label === c.label) btn.classList.add('selected');
+    if (existing && !isStep2 && existing.label === c.label) btn.classList.add('selected');
+    if (existing && isStep2 && existing.step2_label === c.label) btn.classList.add('selected');
     const posLabels = ['A','B','C','D','E','F'];
     btn.innerHTML = `<span class="choice-label">${posLabels[idx]}</span><span class="choice-text">${c.text}</span>`;
-    btn.addEventListener('click', () => selectChoice(q, c, btn));
+    btn.addEventListener('click', () => {
+      if (q.type === 'fact_then_frequency' && !isStep2) {
+        selectStep1(q, c, btn);
+      } else if (q.type === 'fact_then_frequency' && isStep2) {
+        selectStep2(q, c, btn);
+      } else {
+        selectChoice(q, c, btn);
+      }
+    });
     container.appendChild(btn);
   });
+}
 
-  // Progress
-  const prog = (state.currentQuestion / questions.length) * 100;
-  document.getElementById('progressFill').style.width = prog + '%';
+function renderFactThenFrequency(q){
+  const stepFactEl = document.getElementById('qStepFact');
+  const promptEl = document.getElementById('qPrompt');
+  const existing = state.answers[q.id];
 
-  showScreen('screen-question');
+  // step1 답변이 이미 있는 경우: step1 lock + step2 표시
+  if (existing && existing.step1) {
+    stepFactEl.innerHTML = `
+      <div class="step-fact-prompt">${q.step1_prompt.replace(/\n/g,'<br>')}</div>
+      <div class="step-fact-answer">선택: ${existing.step1 === 'Y' ? '예' : '아니오'}</div>
+    `;
+    stepFactEl.style.display = '';
+    if (existing.step1 === 'N') {
+      // N 응답: step2 없이 자동 진행 마커만
+      promptEl.innerHTML = q.step1_prompt.replace(/\n/g,'<br>');
+      promptEl.style.display = 'none';
+      document.getElementById('qChoices').innerHTML = '<div class="step-skip-note">"아니오" 응답 — 0점 처리됨</div>';
+      return;
+    }
+    // step2 prompt + choices
+    promptEl.innerHTML = q.step2_prompt.replace(/\n/g,'<br>');
+    promptEl.style.display = '';
+    renderChoiceButtons(q, q.step2_choices, true);
+    return;
+  }
+
+  // step1 표시 (Y/N 선택)
+  promptEl.innerHTML = q.step1_prompt.replace(/\n/g,'<br>');
+  promptEl.style.display = '';
+  renderChoiceButtons(q, q.step1_choices, false);
 }
 
 function selectChoice(q, c, btn){
-  document.querySelectorAll('.choice-button').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('#qChoices .choice-button').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
-  state.answers[q.id] = { choice: c.label, label: c.label, score: c.score ?? 0, tag: c.tag ?? null };
+  state.answers[q.id] = {
+    choice: c.label, label: c.label,
+    score: c.score ?? 0, tag: c.tag ?? null
+  };
   save();
   trackEvent('answer_selected', {
-    question_id: q.id,
-    axis: q.axis,
+    question_id: q.id, axis: q.axis,
+    selected_label: c.label,
+    selected_score: c.score ?? 0,
+    selected_tag: c.tag ?? 'none'
+  });
+  setTimeout(() => advanceQuestion(), 300);
+}
+
+// fact_then_frequency: step1 (Y/N) 처리 — q.type === 'fact_then_frequency'에서 호출
+// step1 (Y/N)을 처리하는 핸들러는 renderChoiceButtons의 콜백에서 분기됨
+// step1 응답이 fact_then_frequency 첫 번째 호출이고, q.step1_choices 안에 c가 있으면 step1 처리
+// 위 selectChoice는 fact_then_frequency의 step1과 step2 둘 다 처리할 수 있도록 분기 처리
+// → 더 명확한 분기를 위해 별도 함수로 split:
+
+function selectStep1(q, c, btn){
+  document.querySelectorAll('#qChoices .choice-button').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  if (c.skip_step2) {
+    // "아니오" 응답: 0점 즉시 저장 후 자동 진행
+    state.answers[q.id] = {
+      choice: 'N', label: 'N', step1: 'N',
+      score: 0, tag: null
+    };
+    save();
+    trackEvent('answer_selected', {
+      question_id: q.id, axis: q.axis,
+      selected_label: 'N', selected_score: 0,
+      selected_tag: 'skipped'
+    });
+    setTimeout(() => advanceQuestion(), 300);
+    return;
+  }
+  // "예" 응답: step1 저장 + step2 렌더링
+  state.answers[q.id] = {
+    choice: 'Y', label: 'Y', step1: 'Y',
+    score: 0, tag: null
+  };
+  save();
+  setTimeout(() => renderFactThenFrequency(q), 250);
+}
+
+function selectStep2(q, c, btn){
+  document.querySelectorAll('#qChoices .choice-button').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const prev = state.answers[q.id] || {};
+  state.answers[q.id] = {
+    choice: c.label, label: c.label, step1: 'Y', step2_label: c.label,
+    score: c.score ?? 0, tag: c.tag ?? null
+  };
+  save();
+  trackEvent('answer_selected', {
+    question_id: q.id, axis: q.axis,
     selected_label: c.label,
     selected_score: c.score ?? 0,
     selected_tag: c.tag ?? 'none'
@@ -1234,49 +1441,71 @@ function showInsightBreak(axisJustDone, nextIdx){
   const preludeHTML = `<div class="insight-top-line"></div><div class="insight-prelude">잠깐, 여기까지의 당신을 보여드릴게요.</div>`;
 
   if (axisJustDone === 1) {
-    const purposeMap = {A:"소비의 자유", B:"가족의 안전", C:"시간의 자유", D:"자기실현"};
-    const timeMap = {A:"소비 활동", B:"저축과 절약", C:"경제 공부", D:"투자 활동", E:"생각은 많이 하지만 구체적 행동은 없는 상태"};
-    const p = purposeMap[state.answers["P1-08"]?.label] || "—";
-    const t = timeMap[state.answers["P1-09"]?.label] || "—";
+    // P1-02: Purpose Layer 4유형 — 경제적 자유의 첫 모습
+    const purposeMap = {
+      A: "더 이상 일하지 않아도 되는 상태",
+      B: "가족이 어떤 상황에서도 안전한 상태",
+      C: "내가 원할 때 원하는 것을 살 수 있는 상태",
+      D: "내가 누구인지를 행동으로 증명할 수 있는 상태"
+    };
+    // P1-04: 시간 관점 — 5년 후 영향 고려 정도
+    const timeMap = {
+      A: "결정에서 5년 후 영향을 가장 중요한 기준으로 본다",
+      B: "5년 후 영향을 일부 고려하지만 현재가 우선이다",
+      C: "결정 당시엔 5년 후를 떠올리지 않지만 영향이 컸다고 돌아본다",
+      D: "5년이라는 시간 틀로 결정을 바라보지 않는다",
+      E: "최근 1년 그 정도의 큰 결정이 없었다"
+    };
+    const p = purposeMap[state.answers["P1-02"]?.label] || "—";
+    const t = timeMap[state.answers["P1-04"]?.label] || "—";
     container.innerHTML = `
-      <div class="insight-text">당신은 돈을 <span class="hl">"${p}"</span>의 도구로 느끼면서,</div>
-      <div class="insight-text">실제로는 <span class="hl">"${t}"</span>에 시간을 쓰고 있습니다.</div>
+      <div class="insight-text">당신은 경제적 자유를</div>
+      <div class="insight-text"><span class="hl">"${p}"</span>의 모습으로 떠올립니다.</div>
       <div class="insight-divider"></div>
-      <div class="insight-text small">그런데 —</div>
+      <div class="insight-text small">그리고 큰 결정을 할 때 —</div>
+      <div class="insight-text"><span class="hl">"${t}"</span>고 답하셨습니다.</div>
+      <div class="insight-divider"></div>
       <div class="insight-tail">당신이 '안다고 생각하는 것'은<br>진짜 아는 것일까요?</div>
     `;
     document.getElementById('insightContinueBtn').textContent = '계속하기 →';
   } else if (axisJustDone === 2) {
-    // 간극 크기에 따른 동적 분기 (|g1 - g2| >= 2: 큰 간극 / <= 1: 작은 간극)
     const gap12 = Math.abs(grades.g1 - grades.g2);
     let messageHTML;
-    if (gap12 >= 2) {
-      // 인식 vs 지식 간극이 큰 경우
+    // v11 신규: 부적 케이스 시그널 (폭 ≥ 4, 깊이 ≤ 2)
+    if (grades.g2_breadth >= 4 && grades.g2_depth <= 2) {
+      messageHTML = `
+        <div class="insight-text">당신은 많은 지도를 보았습니다 —<br>개념의 폭은 이미 자산입니다.</div>
+        <div class="insight-text">다만 그 개념들을<br>본인 일상에 적용해본 시간은<br>아직 짧습니다.</div>
+        <div class="insight-chart-wrap"><canvas id="insightChart" width="250" height="250"></canvas></div>
+        <div class="insight-divider"></div>
+        <div class="insight-tail">지도를 많이 본 것과<br>그 길을 걷는 것은 다른 일입니다.</div>
+      `;
+    } else if (gap12 >= 2) {
       messageHTML = `
         <div class="insight-text">당신은 가야 할 방향을<br>분명히 알고 있습니다.</div>
-        <div class="insight-text">하지만 그 길에 필요한 지식은<br>아직 채워지는 중입니다.</div>
+        <div class="insight-text">하지만 그 길에 필요한 앎은<br>아직 채워지는 중입니다.</div>
         <div class="insight-chart-wrap"><canvas id="insightChart" width="250" height="250"></canvas></div>
         <div class="insight-divider"></div>
         <div class="insight-tail">"안다고 생각하는 것"과 "실제로 아는 것" —<br>이 둘의 간극이 보이시나요?</div>
       `;
     } else {
-      // 균형 잡힌 경우
       messageHTML = `
-        <div class="insight-text">당신의 방향과 지식이<br>비슷한 깊이에 있습니다.</div>
+        <div class="insight-text">당신의 방향과 앎이<br>비슷한 깊이에 있습니다.</div>
         <div class="insight-chart-wrap"><canvas id="insightChart" width="250" height="250"></canvas></div>
         <div class="insight-divider"></div>
         <div class="insight-tail">하지만 — 안다고 해서 한 것은 아니죠.<br>실제로 해온 것은 얼마나 될까요?</div>
       `;
     }
     container.innerHTML = messageHTML;
-    setTimeout(() => drawInsightRadar(['인식','지식','경험','독서학습'], [grades.g1, grades.g2, 0, 0]), 100);
+    setTimeout(() => drawInsightRadar(
+      ['인식','지식(폭)','지식(깊이)','경험','독서학습'],
+      [grades.g1, grades.g2_breadth, grades.g2_depth, 0, 0]
+    ), 100);
   } else if (axisJustDone === 3) {
-    // 인식·지식 평균 vs 경험 간극에 따른 동적 분기
     const knowledgeGrade = Math.max(grades.g1, grades.g2);
     const gap13 = Math.abs(knowledgeGrade - grades.g3);
     let messageHTML;
     if (gap13 >= 2) {
-      // 아는 것과 행동 사이 간극이 큰 경우
       messageHTML = `
         <div class="insight-text">당신이 알고 있는 것과<br>실제로 해온 것 사이에</div>
         <div class="insight-text">적지 않은 거리가 있습니다.</div>
@@ -1286,7 +1515,6 @@ function showInsightBreak(axisJustDone, nextIdx){
         <div class="insight-tail">마지막으로 — 어떻게 배우는 사람인지<br>보여드릴게요.</div>
       `;
     } else {
-      // 균형 잡힌 경우
       messageHTML = `
         <div class="insight-text">당신의 인식·지식·경험이<br>비슷한 깊이로 함께 가고 있습니다.</div>
         <div class="insight-chart-wrap"><canvas id="insightChart" width="250" height="250"></canvas></div>
@@ -1296,7 +1524,10 @@ function showInsightBreak(axisJustDone, nextIdx){
       `;
     }
     container.innerHTML = messageHTML;
-    setTimeout(() => drawInsightRadar(['인식','지식','경험','독서학습'], [grades.g1, grades.g2, grades.g3, 0]), 100);
+    setTimeout(() => drawInsightRadar(
+      ['인식','지식(폭)','지식(깊이)','경험','독서학습'],
+      [grades.g1, grades.g2_breadth, grades.g2_depth, grades.g3, 0]
+    ), 100);
   } else if (axisJustDone === 4) {
     container.innerHTML = `
       <div class="insight-text">인식·지식·경험·독서학습 —<br>네 가지 모서리가 모였습니다.</div>
@@ -1305,7 +1536,10 @@ function showInsightBreak(axisJustDone, nextIdx){
       <div class="insight-tail">당신이 보고 있는 모양,<br>그게 오늘 당신의 위치입니다.</div>
     `;
     document.getElementById('insightContinueBtn').textContent = '당신의 결과를 확인하세요 →';
-    setTimeout(() => drawInsightRadar(['인식','지식','경험','독서학습'], [grades.g1, grades.g2, grades.g3, grades.g4]), 100);
+    setTimeout(() => drawInsightRadar(
+      ['인식','지식(폭)','지식(깊이)','경험','독서학습'],
+      [grades.g1, grades.g2_breadth, grades.g2_depth, grades.g3, grades.g4]
+    ), 100);
   }
 
   container.innerHTML = preludeHTML + container.innerHTML;
@@ -1365,12 +1599,15 @@ function continueFromInsight(){
 /* ===================== 결과 페이지 ===================== */
 function finishDiagnosis(){
   const { grades, scores } = computeScores();
-  resultType = classifyType(grades.g1, grades.g2, grades.g3, grades.g4);
-  // balanced stage 보정
+  resultType = classifyType(
+    grades.g1, grades.g2, grades.g3, grades.g4,
+    grades.g2_breadth, grades.g2_depth
+  );
+  // voyager stage 보정 (4축 균형 + avg ≥ 4.5 시 5단계)
   let info = {...typeInfo[resultType]};
-  if (resultType === "balanced") {
+  if (resultType === "voyager") {
     const avg = (grades.g1 + grades.g2 + grades.g3 + grades.g4) / 4;
-    info.stage = avg >= 4 ? 5 : 4;
+    info.stage = avg >= 4.5 ? 5 : 4;
   }
 
   state.completed = true;
@@ -1383,8 +1620,15 @@ function finishDiagnosis(){
   trackEvent('diagnosis_complete_detail', {
     type: info.name,
     stage: info.stage,
-    axis1_grade: grades.g1, axis2_grade: grades.g2, axis3_grade: grades.g3, axis4_grade: grades.g4,
-    axis1_score: scores.axis1Score, axis2_score: scores.axis2Score, axis3_score: scores.axis3Score, axis4_score: scores.axis4Score,
+    axis1_grade: grades.g1,
+    axis2_grade: grades.g2,
+    axis2_breadth_grade: grades.g2_breadth,
+    axis2_depth_grade: grades.g2_depth,
+    axis3_grade: grades.g3, axis4_grade: grades.g4,
+    axis1_score: scores.axis1Score,
+    axis2_breadth_score: scores.axis2Breadth,
+    axis2_depth_score: scores.axis2Depth,
+    axis3_score: scores.axis3Score, axis4_score: scores.axis4Score,
     duration_seconds: Math.round((Date.now() - state.startTime) / 1000),
     answers_json: JSON.stringify(answerSummary)
   });
@@ -1416,12 +1660,13 @@ function finishDiagnosis(){
 
 function getGapSummary(type){
   const m = {
-    knower: "당신은 '아는 것'과 '하는 것' 사이에 간극이 있습니다.",
-    doer: "당신은 '하고 있는 것'과 '알고 있는 것' 사이에 간극이 있습니다.",
-    bookworm: "당신의 배움이 아직 삶의 변화로 이어지지 못하고 있습니다.",
-    starter: "당신의 여정은 이제 막 시작되려 하고 있습니다.",
-    balanced: "당신의 네 가지 영역이 균형 있게 성장하고 있습니다.",
-    visionary: "당신의 비전과 현실 사이에 간극이 있습니다."
+    gateway: "당신은 문 앞에 서 있습니다 — 안에서 무언가를 찾고 있다는 신호입니다.",
+    walker: "당신은 이미 걷고 있습니다 — 나침반 하나를 더하면 더 멀리 갈 수 있습니다.",
+    dreamer: "당신은 별을 보고 있습니다 — 발밑 한 걸음이 그 별까지의 다리를 만듭니다.",
+    bridge: "당신은 강 건너에 무엇이 있는지 알고 있습니다 — 첫 발이 강을 건너게 합니다.",
+    reader: "당신의 배움은 이미 자산입니다 — 한 번의 실행이 그 자산을 살아 움직이게 합니다.",
+    shifter: "당신은 많은 지도를 보았습니다 — 이제는 한 지도를 깊이 걷는 시간입니다.",
+    voyager: "당신의 네 영역이 본인 언어로 함께 가고 있습니다 — 이제는 깊이로 들어가는 단계입니다."
   };
   return m[type] || "";
 }
@@ -1433,9 +1678,9 @@ function drawResultChart(grades){
   resultChartInstance = new Chart(ctx, {
     type: 'radar',
     data: {
-      labels: ['인식', '지식', '경험', '독서·학습'],
+      labels: ['인식', '지식(폭)', '지식(깊이)', '경험', '독서·학습'],
       datasets: [{
-        data: [grades.g1, grades.g2, grades.g3, grades.g4],
+        data: [grades.g1, grades.g2_breadth, grades.g2_depth, grades.g3, grades.g4],
         backgroundColor: 'rgba(201, 169, 110, 0.15)',
         borderColor: '#C9A96E',
         borderWidth: 2,
@@ -1485,7 +1730,7 @@ function verifyUnlockCode(){
     state.unlocked = true;
     save();
     const info = {...typeInfo[resultType]};
-    if (resultType === "balanced" && state.result) info.stage = state.result.stage;
+    if (resultType === "voyager" && state.result) info.stage = state.result.stage;
     document.getElementById('codeBox').style.display = 'none';
     renderUnlocked(state.result.grades, info);
   } else {
@@ -1497,6 +1742,27 @@ function renderUnlocked(grades, info){
   document.getElementById('unlockedContent').style.display = 'block';
   document.getElementById('lockBox').style.display = 'none';
   document.getElementById('needText').textContent = info.need;
+
+  // v11 shifter (부적 케이스) 안내 — shifter 유형일 때만 표시
+  const shifterNote = document.getElementById('shifterNote');
+  if (resultType === "shifter" && shifterNote) {
+    shifterNote.style.display = 'block';
+    shifterNote.innerHTML = `
+      <div class="shifter-note-title">왜 이 유형으로 나왔나요?</div>
+      <p class="shifter-note-body">
+        당신은 경제·투자·사업의 개념(자산·부채·복리·분산투자 등)을 폭넓게 알고 있습니다 — 이는 누구나 가질 수 있는 자산이 아닙니다.
+        다만 이번 진단의 깊이 영역(자산·부채 / 복리 / 분산투자 / 소득 구조)에서는,
+        그 개념들을 본인의 일상 결정에 직접 적용해본 경험은 아직 충분히 쌓이지 않았다는 신호가 보였습니다.
+      </p>
+      <p class="shifter-note-body">
+        이것은 단점이 아닙니다 — 폭은 이미 자산이고, 깊이는 그 자산 위에 시간이 쌓이며 만들어집니다.
+        한 가지 개념을 골라 한 달 동안 일상에서 검증해보세요.
+        그 한 달이 폭을 깊이로 옮기는 첫 다리가 됩니다.
+      </p>
+    `;
+  } else if (shifterNote) {
+    shifterNote.style.display = 'none';
+  }
 
   // 축별 상세
   const axisBox = document.getElementById('axisDetails');
@@ -1517,14 +1783,22 @@ function renderUnlocked(grades, info){
   // 교차 검증
   const crossBox = document.getElementById('crossDetails');
   crossBox.innerHTML = '';
-  const popova = getPopovaGapMessage(state.answers["P1-03"]?.tag, state.answers["P3-08"]?.tag);
-  const dk = getDunningKrugerMessage(state.answers["P4-07"]?.tag, grades.g2);
-  const aspTag = state.answers["P1-06"]?.tag;
-  const planTag = state.answers["P1-07"]?.tag;
-  const aligned = aspTag && planTag && aspTag === planTag;
+  // v11: cross-validation — 새 분류 태그 체계로 매핑
+  const popova = getPopovaGapMessage(state.answers["P1-03"]?.tag, state.answers["P3-04"]?.label);
+  const dk = getDunningKrugerMessage(state.answers["P1-10"]?.tag, grades.g2);
+  const purposeTag = state.answers["P1-02"]?.tag;     // Purpose Layer
+  const desireTag = state.answers["P2-04"]?.tag;      // 자유 정의 본인 기준
+  // Purpose Layer ↔ 자유 정의 매핑 (정합도)
+  const purposeMap = {
+    "자유형": ["시간자율성중심"],
+    "보호형": ["보호중심"],
+    "향유형": ["소비자율성중심", "잔고중심"],
+    "표현형": ["현금흐름중심"]
+  };
+  const aligned = purposeTag && desireTag && (purposeMap[purposeTag] || []).includes(desireTag);
   const alignMsg = aligned
-    ? "되고 싶은 모습과 실제 행동 계획이 일치하고 있습니다."
-    : "되고 싶은 모습과 실제 행동 계획 사이에 차이가 있습니다.";
+    ? "되고 싶은 모습과 자유의 정의가 본인 안에서 일관됩니다."
+    : "되고 싶은 모습과 자유의 정의 사이에 다른 결이 있습니다 — 어느 쪽이 더 본질일지 살펴볼 단계입니다.";
   [popova, dk, alignMsg].forEach(msg => {
     const el = document.createElement('div');
     el.className = 'cross-item';
@@ -1549,22 +1823,35 @@ function renderUnlocked(grades, info){
   document.getElementById('mhMsgBody').textContent = info.mhMessage;
 }
 
-function getPopovaGapMessage(emotion, action){
-  if (!emotion || !action) return "감정과 행동 사이의 연결을 살펴볼 필요가 있습니다.";
-  if (emotion === "Status" && action === "무행동") return "자극은 받지만 행동으로 이어지지 않는 패턴이 있습니다.";
-  if (emotion === "Worship" && action === "탐색") return "관심은 있지만 실행까지는 가지 않는 경향이 있습니다.";
-  if (emotion === "Vigilance" && action === "무행동") return "걱정이 행동을 막고 있을 수 있습니다.";
-  if (action === "실행" || action === "관계행동") return "감정이 행동으로 이어지는 실행력을 가지고 있습니다.";
-  return "감정과 행동 사이의 연결을 살펴볼 필요가 있습니다.";
+// v11: P1-03 저축 가치관 vs P3-04 예상치 못한 돈 사용 (Popova 연결)
+function getPopovaGapMessage(p103Tag, p304Label){
+  if (!p103Tag || !p304Label) return "가치관과 행동 사이의 연결을 살펴볼 필요가 있습니다.";
+  // P1-03: 절약동조 / 현재향유 / 소득우선 / 개인선택
+  // P3-04 step2: A=소비, B=반저축, C=저축/상환, D=투자/성장
+  if (p103Tag === "절약동조" && (p304Label === "C" || p304Label === "D")) {
+    return "절약을 가치 있게 보는 마음과 실제 행동이 일관됩니다.";
+  }
+  if (p103Tag === "절약동조" && p304Label === "A") {
+    return "절약을 가치 있게 보지만 실제 행동은 다른 방향입니다 — 가치관과 행동의 간극을 확인할 시점입니다.";
+  }
+  if (p103Tag === "현재향유" && p304Label === "A") {
+    return "현재의 향유를 중시하는 가치관과 실제 행동이 일관됩니다.";
+  }
+  if (p103Tag === "소득우선" && p304Label === "D") {
+    return "소득을 키우는 방향과 실제 행동(자기 성장 투자)이 연결되어 있습니다.";
+  }
+  return "가치관과 행동의 결을 함께 보세요 — 어느 쪽이 더 본인다운지 점검해볼 시간입니다.";
 }
 
+// v11: P1-10 자기 평가 vs g2 (앎 종합 등급) Dunning-Kruger
 function getDunningKrugerMessage(self, actual){
-  const map = { "초보":1, "기본":2, "중급":3, "전문":4, "고립": null };
-  if (self === "고립") return "주변에 대화 상대가 없어 자기 수준을 확인하기 어려운 상태입니다.";
+  if (!self) return "자기 인식을 확인하기 어렵습니다.";
+  if (self === "미비교") return "비교해본 적이 없다고 답하셨습니다 — 다른 사람과의 거리를 한 번 가늠해보면 좋습니다.";
+  const map = { "상위10": 5, "상위30": 4, "평균": 3, "하위30": 2 };
   const sl = map[self]; if (sl == null) return "자기 인식을 확인하기 어렵습니다.";
   const gap = sl - actual;
-  if (gap >= 2) return "실제 지식보다 자기 평가가 높은 편입니다. 모르는 것을 모르는 상태일 수 있습니다.";
-  if (gap <= -2) return "실제 지식에 비해 자기 평가가 낮은 편입니다. 스스로를 과소평가하고 있을 수 있습니다.";
+  if (gap >= 2) return "실제 측정된 앎보다 자기 평가가 높은 편입니다 — 모르는 것을 모르는 상태일 수 있습니다.";
+  if (gap <= -2) return "실제 측정된 앎에 비해 자기 평가가 낮은 편입니다 — 스스로를 과소평가하고 있을 수 있습니다.";
   return "자기 인식과 실제 수준이 비교적 일치합니다.";
 }
 
@@ -1573,7 +1860,7 @@ function shareResult(){
   trackEvent('freedom_share_click', { event_category: 'engagement', event_label: resultType });
   const info = typeInfo[resultType];
   const stage = state.result?.stage || info.stage;
-  const text = `나는 "${info.name}" — ${info.metaphor}. 여정 ${stage}단계.\n나는 경제적 자유에 얼마나 가까운가?`;
+  const text = `나의 여정 — "${info.name}" (${info.metaphor})\n경제적 자유 진단으로 본 나의 위치는?`;
   const shareData = { title: '경제적 자유 진단 결과', text, url: window.location.href };
   if (navigator.share) {
     navigator.share(shareData).catch(()=>{});
@@ -1589,7 +1876,7 @@ function restartDiagnosis(){
   if (!confirm('다시 진단하시겠습니까? 현재 결과가 초기화됩니다.')) return;
   reset();
   state = {
-    version: 1, startTime: Date.now(), currentQuestion: 0,
+    version: 2, startTime: Date.now(), currentQuestion: 0,
     answers: {}, completed: false, result: null, unlocked: false, shuffledChoices: {}
   };
   resultType = null;
@@ -1598,9 +1885,11 @@ function restartDiagnosis(){
 }
 
 /* ===================== 초기화 / 복구 ===================== */
+const STATE_VERSION = 2;  // v10 = 1, v11 = 2 (호환 안 함, 점수 분포·문항·유형이 다름)
+
 (function init(){
   const saved = load();
-  if (saved) {
+  if (saved && saved.version === STATE_VERSION) {
     state = Object.assign(state, saved);
     if (state.completed && state.result) {
       resultType = state.result.type;
@@ -1616,6 +1905,9 @@ function restartDiagnosis(){
       renderQuestion();
       return;
     }
+  } else if (saved) {
+    // v10 또는 이전 버전 데이터: 자동 초기화
+    reset();
   }
   showScreen('screen-start');
 })();
