@@ -421,23 +421,24 @@ button { font-family: inherit; }
 
     <!-- Locked -->
     <div class="lock-box" id="lockBox">
-      <div class="lock-title">🔒 잠금 해제하면 볼 수 있는 것들</div>
+      <div class="lock-title">🔒 여기서부터가 진짜입니다</div>
+      <div class="lock-prompt" style="margin-bottom: 20px;">이 진단의 핵심은 점수가 아니라 — 당신만의 패턴입니다.</div>
       <div class="cta-preview-list">
         <div class="cta-preview-item">
-          <div class="cta-preview-title">🎯 당신에게 지금 가장 필요한 한 가지</div>
-          <div class="cta-preview-desc">유형별 맞춤 처방</div>
+          <div class="cta-preview-title">🔍 당신이 생각하는 자신 vs 실제 데이터</div>
+          <div class="cta-preview-desc">34문항이 발견한 "안다고 생각하는 것"과 "실제로 하는 것"의 간극</div>
         </div>
         <div class="cta-preview-item">
-          <div class="cta-preview-title">📊 4개 축의 상세 분석</div>
-          <div class="cta-preview-desc">인식 · 지식 · 경험 · 독서학습 각각의 강점과 약점</div>
+          <div class="cta-preview-title">🎯 당신의 다음 한 걸음</div>
+          <div class="cta-preview-desc">유형별로 다른, 지금 당장 시작할 한 가지</div>
         </div>
         <div class="cta-preview-item">
-          <div class="cta-preview-title">🔍 당신이 생각하는 자신 vs 실제</div>
-          <div class="cta-preview-desc">자기 보고와 행동 데이터의 간극 분석</div>
+          <div class="cta-preview-title">📊 4가지 영역 상세 진단표</div>
+          <div class="cta-preview-desc">인식 · 지식 · 경험 · 독서학습 각 영역의 강점과 약점</div>
         </div>
         <div class="cta-preview-item">
-          <div class="cta-preview-title">📚 맞춤 추천 도서 3권 + 멘토의 한 마디</div>
-          <div class="cta-preview-desc">당신의 다음 걸음을 위한 구체적 가이드</div>
+          <div class="cta-preview-title">📚 맞춤 책 3권 + 멘토의 한 마디</div>
+          <div class="cta-preview-desc">당신과 같은 길을 먼저 걸어본 사람의 메시지</div>
         </div>
       </div>
 
@@ -794,11 +795,11 @@ const typeInfo = {
       { title: "JUST KEEP BUYING", reason: "행동의 첫 발을 내딛게 하는 실전서" },
       { title: "위대한 12주", reason: "12주 안에 실행력을 만드는 시스템" }
     ],
-    mhMessage: "저도 오랫동안 다리 앞에 서 있었습니다. 책을 읽고, 영상을 보고, 공부를 했지만 정작 행동은 하지 않았습니다. 돌이켜보면, 한 가지 작은 시작이 모든 것을 바꿨습니다."
+    mhMessage: "안다는 말은 가장 위험한 말입니다. 알고 있어도 하지 않으면, 그건 모르는 것과 같습니다. 한 번 그 다리를 건너본 사람은 다음 다리에서 망설이지 않습니다."
   },
   doer: {
     name: "하는데 모르고 하는 사람", metaphor: "지도 없이 걷고 있는 사람", stage: 2,
-    description: "당신은 이미 걷고 있습니다. 행동력이 있습니다. 하지만 지금 걷고 있는 방향이 맞는지, 더 빠른 길은 없는지 확인해본 적이 없습니다.",
+    description: "당신은 이미 움직이고 있는 사람입니다. 멈춰서 지도를 펴본 적은 적지만, 발걸음은 멈추지 않았습니다. 지금 필요한 건 새로운 시작이 아니라, 한 번 멈춰서 방향을 확인하는 일입니다.",
     need: "지금 필요한 건 '멈추는 것'이 아니라, '지도를 펼치는 것'입니다. 방향을 확인하고 다시 걸으면 됩니다.",
     books: [
       { title: "돈의 심리학", reason: "돈과 감정의 관계를 이해하는 첫 책" },
@@ -820,7 +821,7 @@ const typeInfo = {
   },
   starter: {
     name: "아직 시작 전인 사람", metaphor: "출발선에 선 사람", stage: 1,
-    description: "당신은 아직 출발선에 서 있습니다. 이것은 부끄러운 일이 아닙니다. 대부분의 사람들이 출발선에 서 있다는 사실조차 모릅니다. 당신은 이미 한 발짝 앞에 있습니다.",
+    description: "당신은 출발선에 서 있습니다. 출발선에 서 있다는 사실 자체가 이미 한 가지를 알려줍니다 — 당신은 지금 어디로 갈지 묻고 있다는 것. 묻지 않는 사람은 출발선에도 서지 않습니다.",
     need: "지금 필요한 건 '완벽한 준비'가 아니라, '첫 책 한 권'입니다. 시작이 반입니다.",
     books: [
       { title: "부자의 그릇", reason: "경제적 자유의 출발점을 잡아주는 책" },
