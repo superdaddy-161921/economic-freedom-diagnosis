@@ -1073,31 +1073,65 @@ function showInsightBreak(axisJustDone, nextIdx){
     `;
     document.getElementById('insightContinueBtn').textContent = '계속하기 →';
   } else if (axisJustDone === 2) {
-    container.innerHTML = `
-      <div class="insight-text">당신의 경제 이해도는<br><span class="hl">"${GRADE_LABEL[grades.g2]}"</span> 수준입니다.</div>
-      <div class="insight-chart-wrap"><canvas id="insightChart" width="250" height="250"></canvas></div>
-      <div class="insight-text small">당신이 '원하는 것'과 '알고 있는 것' 사이에<br>이만큼의 간극이 있습니다.</div>
-      <div class="insight-divider"></div>
-      <div class="insight-tail">그런데 — 실제로 해본 것은<br>얼마나 될까요?</div>
-    `;
-    setTimeout(() => drawInsightRadar(['인식','지식','경험','학습'], [grades.g1, grades.g2, 0, 0]), 100);
+    // 간극 크기에 따른 동적 분기 (|g1 - g2| >= 2: 큰 간극 / <= 1: 작은 간극)
+    const gap12 = Math.abs(grades.g1 - grades.g2);
+    let messageHTML;
+    if (gap12 >= 2) {
+      // 인식 vs 지식 간극이 큰 경우
+      messageHTML = `
+        <div class="insight-text">당신은 가야 할 방향을<br>분명히 알고 있습니다.</div>
+        <div class="insight-text">하지만 그 길에 필요한 지식은<br>아직 채워지는 중입니다.</div>
+        <div class="insight-chart-wrap"><canvas id="insightChart" width="250" height="250"></canvas></div>
+        <div class="insight-divider"></div>
+        <div class="insight-tail">"안다고 생각하는 것"과 "실제로 아는 것" —<br>이 둘의 간극이 보이시나요?</div>
+      `;
+    } else {
+      // 균형 잡힌 경우
+      messageHTML = `
+        <div class="insight-text">당신의 방향과 지식이<br>비슷한 깊이에 있습니다.</div>
+        <div class="insight-chart-wrap"><canvas id="insightChart" width="250" height="250"></canvas></div>
+        <div class="insight-divider"></div>
+        <div class="insight-tail">하지만 — 안다고 해서 한 것은 아니죠.<br>실제로 해온 것은 얼마나 될까요?</div>
+      `;
+    }
+    container.innerHTML = messageHTML;
+    setTimeout(() => drawInsightRadar(['인식','지식','경험','독서학습'], [grades.g1, grades.g2, 0, 0]), 100);
   } else if (axisJustDone === 3) {
-    container.innerHTML = `
-      <div class="insight-text">당신이 실제로 해온 것은<br><span class="hl">"${GRADE_LABEL[grades.g3]}"</span> 수준입니다.</div>
-      <div class="insight-chart-wrap"><canvas id="insightChart" width="250" height="250"></canvas></div>
-      <div class="insight-text small">원하는 것, 알고 있는 것, 해본 것 —<br>이 세 가지가 일치하는 사람은 많지 않습니다.</div>
-      <div class="insight-divider"></div>
-      <div class="insight-tail">마지막으로 — 당신은<br>어떻게 배우는 사람인가요?</div>
-    `;
-    setTimeout(() => drawInsightRadar(['인식','지식','경험','학습'], [grades.g1, grades.g2, grades.g3, 0]), 100);
+    // 인식·지식 평균 vs 경험 간극에 따른 동적 분기
+    const knowledgeGrade = Math.max(grades.g1, grades.g2);
+    const gap13 = Math.abs(knowledgeGrade - grades.g3);
+    let messageHTML;
+    if (gap13 >= 2) {
+      // 아는 것과 행동 사이 간극이 큰 경우
+      messageHTML = `
+        <div class="insight-text">당신이 알고 있는 것과<br>실제로 해온 것 사이에</div>
+        <div class="insight-text">적지 않은 거리가 있습니다.</div>
+        <div class="insight-chart-wrap"><canvas id="insightChart" width="250" height="250"></canvas></div>
+        <div class="insight-divider"></div>
+        <div class="insight-text small">이게 보이는 순간이 변화의 시작입니다.</div>
+        <div class="insight-tail">마지막으로 — 어떻게 배우는 사람인지<br>보여드릴게요.</div>
+      `;
+    } else {
+      // 균형 잡힌 경우
+      messageHTML = `
+        <div class="insight-text">당신의 인식·지식·경험이<br>비슷한 깊이로 함께 가고 있습니다.</div>
+        <div class="insight-chart-wrap"><canvas id="insightChart" width="250" height="250"></canvas></div>
+        <div class="insight-divider"></div>
+        <div class="insight-text small">드문 균형입니다.</div>
+        <div class="insight-tail">마지막 한 가지 —<br>어떻게 배우는 사람인가요?</div>
+      `;
+    }
+    container.innerHTML = messageHTML;
+    setTimeout(() => drawInsightRadar(['인식','지식','경험','독서학습'], [grades.g1, grades.g2, grades.g3, 0]), 100);
   } else if (axisJustDone === 4) {
     container.innerHTML = `
-      <div class="insight-text">당신이 배우는 방식은<br><span class="hl">"${GRADE_LABEL[grades.g4]}"</span>입니다.</div>
+      <div class="insight-text">인식·지식·경험·독서학습 —<br>네 가지 모서리가 모였습니다.</div>
       <div class="insight-chart-wrap"><canvas id="insightChart" width="260" height="260"></canvas></div>
-      <div class="insight-text small">인식, 지식, 경험, 학습 —<br>네 가지가 모여 당신의 경제적 자유 여정의<br>현재 위치를 보여줍니다.</div>
+      <div class="insight-divider"></div>
+      <div class="insight-tail">당신이 보고 있는 모양,<br>그게 오늘 당신의 위치입니다.</div>
     `;
     document.getElementById('insightContinueBtn').textContent = '당신의 결과를 확인하세요 →';
-    setTimeout(() => drawInsightRadar(['인식','지식','경험','학습'], [grades.g1, grades.g2, grades.g3, grades.g4]), 100);
+    setTimeout(() => drawInsightRadar(['인식','지식','경험','독서학습'], [grades.g1, grades.g2, grades.g3, grades.g4]), 100);
   }
 
   container.innerHTML = preludeHTML + container.innerHTML;
