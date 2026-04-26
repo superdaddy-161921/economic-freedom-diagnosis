@@ -510,215 +510,318 @@ const CAFE_URL = "https://cafe.naver.com/sd161921";
 const UNLOCK_CODE = "0602";
 
 const questions = [
-  // 축 1 (인식) — 출현 순서: P1-01 → P1-02 → P1-03 → P1-04 → P1-05 → P1-06 → P1-07 → P1-08 → P1-10 → P1-09
-  { id:"P1-01", axis:1, prompt:'지금으로부터 10년 뒤, 평일 아침입니다.\n당신은 어디에서, 무엇을 하고 있을까요?\n\n가장 먼저 떠오르는 것에 가까운 것을 골라주세요.',
+  // 축 1 (믿음) — 출현 순서: P1-01 → P1-02 → P1-03 → P1-04 → P1-05 → P1-06 → P1-07 → P1-08 → P1-10 → P1-09
+  // P1-04(시간 관점, max 3) + P1-07(솔로몬 패러독스, max 4) = 점수 산출 (max 7), 나머지 8문항은 분류 태그
+  { id:"P1-01", axis:1, randomize:true, type:"tag_only", prompt:'지난 한 달, 통장 잔고가 예상보다 100만원 줄어든 것을 본 순간 가장 먼저 든 감정은?',
     choices:[
-      {label:"A", text:"아직 구체적으로 그려본 적은 없다", score:1},
-      {label:"B", text:"지금보다 여유로운 생활을 하고 있을 것이다", score:2},
-      {label:"C", text:"좋아하는 일을 하면서 살고 있을 것이다", score:3},
-      {label:"D", text:"떠오르는 장면이 있다 — 장소와 하는 일까지 보인다", score:4}
+      {label:"A", text:"통제하지 못했다는 불안", tag:"신중형", score:0},
+      {label:"B", text:"더 많이 벌어야 한다는 압박", tag:"성취형", score:0},
+      {label:"C", text:"남에게 보이는 내 모습이 흔들리는 느낌", tag:"관계형", score:0},
+      {label:"D", text:"다음 달에 어떻게 회복할지 자연스럽게 떠오름", tag:"자기확신형", score:0},
+      {label:"E", text:"별 감흥 없음 — 돈은 돈일 뿐", tag:"집중형", score:0}
     ]},
-  { id:"P1-02", axis:1, prompt:'오랜만에 만난 친구가 말합니다.\n"나 요즘 투자 좀 해보려고. 너는 어떻게 생각해?"\n\n당신의 첫 반응에 가장 가까운 것은?',
+  { id:"P1-02", axis:1, randomize:true, type:"tag_only", prompt:'"경제적 자유"라는 말을 들었을 때 머릿속에 가장 먼저 떠오르는 모습은?',
     choices:[
-      {label:"A", text:"걱정이 앞선다 — \"잃을 수도 있는데 괜찮나?\"", tag:"Vigilance"},
-      {label:"B", text:"호기심이 든다 — \"어떤 종목이지? 얼마나 했지?\"", tag:"Status"},
-      {label:"C", text:"따라 하고 싶다 — \"나도 해야 하나, 늦은 건가\"", tag:"Worship"},
-      {label:"D", text:"별생각 없다 — 내가 지금 집중하는 게 분명히 있어서, 그쪽에 흔들리지 않는다", tag:"자기확신"}
+      {label:"A", text:"더 이상 일하지 않아도 되는 상태", tag:"자유형", score:0},
+      {label:"B", text:"가족이 어떤 상황에서도 안전한 상태", tag:"보호형", score:0},
+      {label:"C", text:"내가 원할 때 원하는 것을 살 수 있는 상태", tag:"향유형", score:0},
+      {label:"D", text:"내가 누구인지를 행동으로 증명할 수 있는 상태", tag:"표현형", score:0}
     ]},
-  { id:"P1-03", axis:1, prompt:'가까운 사람들과 이야기를 나누다가, 한 사람이 말합니다.\n"나 작년에 투자해서 꽤 벌었어."\n당신보다 특별히 더 아는 것 같지 않은 사람입니다.\n\n솔직하게, 가장 먼저 드는 감정에 가까운 것은?',
+  { id:"P1-03", axis:1, randomize:true, type:"tag_only", prompt:'친구가 "월급 200만원에 매달 100만원씩 저축한다"고 말합니다. 당신의 첫 반응은?',
     choices:[
-      {label:"A", text:"의심이 든다 — \"운이 좋았겠지, 다음에도 그럴까?\"", tag:"Vigilance"},
-      {label:"B", text:"부럽다 — \"나는 왜 못 했을까\"", tag:"Worship"},
-      {label:"C", text:"비교가 된다 — \"나도 더 잘해야 하는데\"", tag:"Status"},
-      {label:"D", text:"별 감정 없다 — 내가 가는 길이 분명해서, 그 사람의 결과로 마음이 흔들리지 않는다", tag:"자기확신"}
+      {label:"A", text:"정말 대단하다, 나도 더 절약해야겠다", tag:"절약동조", score:0},
+      {label:"B", text:"그렇게 살면 인생이 너무 빡빡하지 않나", tag:"현재향유", score:0},
+      {label:"C", text:"절약보다 수입을 늘리는 방향이 맞다고 본다", tag:"소득우선", score:0},
+      {label:"D", text:"좋고 나쁘다보다 그 사람만의 선택이라 본다", tag:"개인선택", score:0}
     ]},
-  { id:"P1-04", axis:1, prompt:'하루 중 무의식적으로 하게 되는 행동이 있습니다.\n돈과 관련해서, 당신이 가장 자주 하는 것에 가까운 것은?',
+  { id:"P1-04", axis:1, randomize:true, type:"forced_anchor", prompt:'지난 1년 동안 한 가장 큰 결정(이직, 큰 지출, 사업 시작, 관계 변화 등)에서 5년 후 영향을 어떻게 고려하셨나요?',
     choices:[
-      {label:"A", text:"사고 싶은 것을 검색하거나 구경한다", tag:"소비"},
-      {label:"B", text:"주식/코인 시세나 계좌 잔고를 확인한다", tag:"투자"},
-      {label:"C", text:"경제/재테크 관련 콘텐츠나 다른 사람들의 후기를 본다", tag:"학습"},
-      {label:"D", text:"절약할 수 있는 방법을 찾아보거나 가계부를 정리한다", tag:"저축"},
-      {label:"E", text:"딱히 돈과 관련된 행동을 의식적으로 하지 않는다", tag:"무관심"}
+      {label:"A", text:"5년 후 영향이 가장 중요한 기준이었다", score:3},
+      {label:"B", text:"5년 후 영향도 일부 고려했지만 현재 상황이 우선이었다", score:3},
+      {label:"C", text:"결정할 때는 5년 후를 떠올리지 않았는데, 돌아보니 영향이 컸다", score:2},
+      {label:"D", text:"결정에 5년이라는 시간 틀이 없었다 — 더 짧거나 더 긴 단위로 생각했다", score:2},
+      {label:"E", text:"지난 1년 그 정도의 큰 결정이 없었다", score:1}
     ]},
-  { id:"P1-05", axis:1, randomize:true, prompt:'친한 동생(또는 후배)이 당신에게 물어봅니다.\n"형(언니), 나 돈 모으려면 뭐부터 해야 해?"\n\n당신이 가장 먼저 해줄 말에 가까운 것은?',
+  { id:"P1-05", axis:1, randomize:true, type:"tag_only", prompt:'다음 4명 중 가장 \'경제적 자유\'에 가까운 사람을 한 명만 골라야 한다면 어떤 기준으로 판단하시겠어요?',
     choices:[
-      {label:"A", text:"쓸데없는 지출부터 줄여.", tag:"저축우선"},
-      {label:"B", text:"돈 공부를 먼저 해. 모르고 하면 위험해.", tag:"학습우선"},
-      {label:"C", text:"지금 하는 일에 집중해서 더 잘 벌어.", tag:"소득우선"},
-      {label:"D", text:"일단 적금이든 투자든 시작이라도 해봐.", tag:"행동우선"},
-      {label:"E", text:"왜 돈을 모으려는지부터 생각해봐.", tag:"목적우선"}
+      {label:"A", text:"시간을 가장 적게 쓰면서 소득이 나오는 사람", tag:"시간효율", score:0},
+      {label:"B", text:"본인이 일을 멈춰도 소득이 유지되는 사람", tag:"지속성", score:0},
+      {label:"C", text:"소득의 절대 액수가 가장 큰 사람", tag:"액수", score:0},
+      {label:"D", text:"본인이 원할 때 원하는 일에 쓸 시간이 많은 사람", tag:"시간자율성", score:0},
+      {label:"E", text:"외부 압력 없이 본인의 가치관대로 선택할 수 있는 사람", tag:"가치관자율성", score:0}
     ]},
-  { id:"P1-06", axis:1, randomize:true, prompt:'네 사람이 각자 자기 일주일을 이야기합니다.\n당신이 가장 되고 싶은 모습은?',
+  { id:"P1-06", axis:1, randomize:true, type:"tag_only", prompt:'"3억 원이 갑자기 생긴다면" 가장 먼저 떠오르는 행동은?',
     choices:[
-      {label:"A", text:"\"월요일부터 금요일까지 회사에서 맡은 일에 집중해요. 주말엔 가족과 푹 쉬고요. 매달 안정적으로 들어오는 게 든든해요.\"", score:1, tag:"E"},
-      {label:"B", text:"\"제 가게에 매일 나와요. 새벽부터 밤까지 바쁘지만 '내 손님, 내 매출'이라는 게 제일 짜릿해요. 손님 한 명 한 명이 다 제 자산이에요.\"", score:2, tag:"S"},
-      {label:"C", text:"\"월급은 안 받아요. 대신 매달 배당과 임대료로 살아가요. 하루는 제 시간이에요. 운동, 책, 가족 — 그게 제 일이에요.\"", score:3, tag:"I"},
-      {label:"D", text:"\"팀이 사업을 운영해요. 저는 일주일에 한두 번 팀 회의에 참여해서 의견을 보태고, 나머지 시간엔 다른 사람들 만나거나 새로운 분야를 공부해요.\"", score:4, tag:"B"}
+      {label:"A", text:"안전한 예금이나 채권에 넣고 천천히 결정한다", tag:"신중형", score:0},
+      {label:"B", text:"지금까지 못 했던 투자나 자산 운용에 쓴다", tag:"자기확신형", score:0},
+      {label:"C", text:"사업 시작이나 본인 사업 확장에 쓴다", tag:"성취형", score:0},
+      {label:"D", text:"절반은 가족과 좋은 시간을 만드는 데 쓴다", tag:"관계형", score:0},
+      {label:"E", text:"기부나 사회적 가치를 위해 일부 사용한다", tag:"표현형", score:0}
     ]},
-  { id:"P1-07", axis:1, prompt:'돈을 더 벌고 싶다는 마음이 들었습니다.\n가장 먼저 시도해볼 것은?',
+  { id:"P1-07", axis:1, randomize:true, type:"forced_anchor", prompt:'가까운 친구가 당신에게 다음과 같이 묻습니다.\n\n"월급 300만원인데, 전세 대출 이자 40만원, 할부 50만원, 보험 30만원 나가. 그래도 매달 적금 50만원은 넣고 있어. 나 괜찮은 거지?"\n\n친구는 지금 당장의 답을 원합니다. 추가 정보 없이 친구에게 어떻게 답하시겠어요?',
     choices:[
-      {label:"A", text:"이직하거나 승진을 준비한다", tag:"E"},
-      {label:"B", text:"퇴근 후 부업이나 프리랜서 일을 시작한다", tag:"S"},
-      {label:"C", text:"지출을 줄이고 저축을 늘린다", tag:"저축"},
-      {label:"D", text:"주식이나 부동산 같은 투자를 시작한다", tag:"I"},
-      {label:"E", text:"사업 아이템을 구상해본다", tag:"B"}
+      {label:"A", text:'"잘하고 있어. 적금 넣고 있는 게 어디야"', score:1},
+      {label:"B", text:'"고정 지출이 좀 많네. 다음 달부터 보험이라도 줄여봐"', score:3},
+      {label:"C", text:'"적금보다 대출 이자부터 갚는 게 어떨까. 이자율 차이가 클 거야"', score:4},
+      {label:"D", text:'"내가 보기엔 일단 비상금부터 만들어. 혹시 모르니까"', score:3}
     ]},
-  { id:"P1-08", axis:1, prompt:'경제적 자유를 이루고 싶은 가장 솔직한 이유는 무엇인가요?\n정답은 없어요. 가장 가까운 것을 골라주세요.',
+  { id:"P1-08", axis:1, randomize:true, type:"tag_only", prompt:'지난 6개월, 큰 지출(10만원 이상)을 한 후 가장 자주 하는 생각은?',
     choices:[
-      {label:"A", text:"\"사고 싶은 걸 망설이지 않고 사는 일상\" — 가게에서 가격 안 보고 살 수 있는, 그런 종류의 자유", score:1, tag:"수단"},
-      {label:"B", text:"\"내가 사랑하는 사람들에게 든든한 사람이 되는 것\" — 부모님 병원비, 아이 학원비를 걱정 안 하는 자유", score:2, tag:"보호"},
-      {label:"C", text:"\"월요일이 일요일과 같은 삶\" — 누구의 지시도 받지 않고 하루를 내가 정하는 자유", score:3, tag:"해방"},
-      {label:"D", text:"\"지금 일하지 않아도 되는 시간에, 내가 정말 하고 싶은 일을 하는 것\" — 하고 싶은 일이 분명하고, 그걸 위해 시간을 쓰는 자유", score:4, tag:"존재"}
+      {label:"A", text:'"사고 나니 별로 안 쓰네"라고 자주 후회', tag:"구매후후회", score:0},
+      {label:"B", text:'"그때 안 사고 후회한 게 더 많다"고 느낌', tag:"미구매후회", score:0},
+      {label:"C", text:"후회 여부와 관계없이 결정 자체가 어려움", tag:"결정피로", score:0},
+      {label:"D", text:"후회보다는 매번 그 순간 적절했다고 받아들임", tag:"수용적태도", score:0}
     ]},
-  { id:"P1-10", axis:1, prompt:'어릴 때, 집에서 "돈" 이야기가 나올 때의 분위기를 떠올려보세요.\n가장 가까운 것은?',
+  { id:"P1-10", axis:1, randomize:true, type:"tag_only", prompt:'"돈에 대한 나의 판단력"을 100명 중 어디 정도라고 생각하십니까?',
     choices:[
-      {label:"A", text:"돈 이야기가 거의 나오지 않았다", tag:"무관"},
-      {label:"B", text:"돈 이야기가 나오면 분위기가 무거워졌다", tag:"부정"},
-      {label:"C", text:"부모님이 절약과 저축을 자주 강조하셨다", tag:"보수"},
-      {label:"D", text:"부모님이 돈을 버는 방법이나 기회에 대해 이야기하셨다", tag:"성장"},
-      {label:"E", text:"돈 때문에 다투는 모습을 자주 보았다", tag:"갈등"}
+      {label:"A", text:"상위 10% — 또래보다 훨씬 잘 안다", tag:"상위10", score:0},
+      {label:"B", text:"상위 30% 정도 — 평균보다는 위", tag:"상위30", score:0},
+      {label:"C", text:"50% 정도 — 평균", tag:"평균", score:0},
+      {label:"D", text:"하위 30% — 평균보다 낮다", tag:"하위30", score:0},
+      {label:"E", text:"비교해본 적이 없어 모르겠다", tag:"미비교", score:0}
     ]},
-  { id:"P1-09", axis:1, prompt:'최근 한 달을 떠올려보세요.\n돈과 관련해서 가장 많은 시간을 쓴 것은?',
+  { id:"P1-09", axis:1, randomize:true, type:"tag_only", prompt:'당신의 부모님은 돈에 대해 주로 어떤 말씀을 하셨습니까?',
     choices:[
-      {label:"A", text:"소비 (쇼핑, 외식, 여가 등)", tag:"소비"},
-      {label:"B", text:"저축/절약 (가계부, 비용 절감 등)", tag:"저축"},
-      {label:"C", text:"학습 (경제 관련 책, 유튜브, 뉴스 등)", tag:"학습"},
-      {label:"D", text:"투자 관련 활동 (리서치, 매매, 포트폴리오 점검 등)", tag:"투자"},
-      {label:"E", text:"돈에 대해 생각은 많이 했지만, 구체적인 행동으로 옮긴 적은 없다", tag:"미실행"}
+      {label:"A", text:'"돈은 위험하다, 잘못 다루면 망한다"', tag:"신중형메시지", score:0},
+      {label:"B", text:'"돈을 많이 벌어야 한다, 그게 성공이다"', tag:"성취형메시지", score:0},
+      {label:"C", text:'"돈이 있어야 사람 대접을 받는다"', tag:"관계형메시지", score:0},
+      {label:"D", text:'"돈은 도구일 뿐이다, 어떻게 쓰는지가 중요하다"', tag:"자기확신형메시지", score:0},
+      {label:"E", text:"돈에 대한 대화가 거의 없었다", tag:"집중형메시지", score:0}
     ]},
 
-  // 축 2 (지식) — 출현 순서: P2-01 → P2-02 → P2-03 → P2-04 → P2-05 → P2-06 → P2-08 → P2-07 → P2-09
-  { id:"P2-01", axis:2, prompt:'친구가 말합니다.\n"나 자산이 5억이야. 대출이 3억 있긴 한데, 이번에 차 바꾸고 해외여행도 가려고. 괜찮겠지?"\n\n당신이 가장 먼저 묻거나 확인하고 싶은 것에 가까운 것은?',
+  // 축 2 (앎) — 출현 순서: P2-01 → P2-02 → P2-03 → P2-04 → P2-05 → P2-06 → P2-08 → P2-07 → P2-09 → P2-D1 → P2-D2 → P2-D3 → P2-D4
+  // 폭 9문항: GFC 4(P2-05·06·07·09 max 16) + 시나리오 2(P2-02·08 max 8) + 분류태그 3(P2-01·03·04 score 0)
+  // 깊이 4문항: 5점 리커트 (P2-D1~D4 max 20)
+  { id:"P2-01", axis:2, subaxis:"breadth", randomize:true, type:"tag_only", prompt:'당신이 큰 돈이 드는 결정(집·차·큰 가전·투자상품 등)을 할 때, 가장 먼저 떠올리는 질문은?',
     choices:[
-      {label:"A", text:"\"그 5억이 어떻게 구성되어 있어? 현금이야, 부동산이야?\"", score:3},
-      {label:"B", text:"\"대출 이자랑 원금 상환은 매달 얼마 나가?\"", score:3},
-      {label:"C", text:"\"차 사고 여행 가는 데 얼마 쓸 건데?\"", score:2},
-      {label:"D", text:"\"괜찮아. 5억이면 충분해.\"", score:1},
-      {label:"E", text:"\"잘 모르겠어. 본인이 판단할 일이지.\"", score:0}
+      {label:"A", text:'"지금 이 돈을 쓸 능력이 되는가?"', tag:"현재가용성", score:0},
+      {label:"B", text:'"이게 정말 필요한가?"', tag:"필요중심", score:0},
+      {label:"C", text:'"5년·10년 후 가치는 어떻게 될까?"', tag:"미래가치", score:0},
+      {label:"D", text:'"매월 현금흐름에 어떻게 영향을 미칠까?"', tag:"현금흐름", score:0},
+      {label:"E", text:'"다른 대안(중고·임대·렌탈 등)은 없을까?"', tag:"대안탐색", score:0}
     ]},
-  { id:"P2-02", axis:2, prompt:'지인이 고민을 말합니다.\n"월급 300만원인데, 전세 대출 이자 40만원, 할부 50만원, 보험 30만원 나가.\n그래도 매달 적금 50만원은 넣고 있어. 나 괜찮은 거지?"\n\n당신이 가장 먼저 떠오르는 생각에 가까운 것은?',
+  { id:"P2-02", axis:2, subaxis:"breadth", randomize:true, type:"scenario_inference",
+    scenario:'두 사람이 비슷한 자산을 가지고 있습니다.\n\n■ 김 부장 (45세, 자산 5억)\n- 대기업 임원, 연봉 1억 5천\n- 5억은 모두 본인 명의 아파트와 적금\n- 매년 안정적 인상\n\n■ 박 사장 (45세, 자산 5억)\n- 본인 카페 운영, 월 순이익 700만원\n- 5억은 가게 인테리어·운영 자금·아파트 전세금 분산\n- 본인 매일 출근해 운영',
+    prompt:'5년 후 두 사람의 \'자유의 질\'은 어떻게 될 것 같습니까?',
     choices:[
-      {label:"A", text:"\"적금 50만원 모으는 동안 대출 이자로 더 많이 나가고 있을 수 있어.\"", score:3},
-      {label:"B", text:"\"할부랑 보험을 합치면 80만원이야. 이게 진짜 필요한 지출인가?\"", score:3},
-      {label:"C", text:"\"적금 꾸준히 넣는 거 자체가 어려운 일이야. 잘하고 있어.\"", score:1},
-      {label:"D", text:"\"월급의 40%가 고정 지출이면 위기 상황 대응이 어려울 수 있어.\"", score:2},
-      {label:"E", text:"\"이런 숫자를 머릿속에서 정리해본 적이 없다.\"", score:0}
+      {label:"A", text:"김 부장이 더 자유에 가까워질 것 — 연봉 인상으로 자본 형성 가속", score:1},
+      {label:"B", text:"박 사장이 더 자유에 가까워질 것 — 사업 시스템화 가능성", score:1},
+      {label:"C", text:"둘 다 비슷할 것 — 둘 다 본인 시간 의존도 높음", score:2},
+      {label:"D", text:"둘 다 5년 전보다 자유의 질이 떨어질 가능성 — 의존 누적", score:3},
+      {label:"E", text:"시간 자율성을 어떻게 만들어가느냐에 따라 갈림 — 행동 의존", score:4}
     ]},
-  { id:"P2-03", axis:2, prompt:'세 사람이 각각 돈을 벌고 있습니다.\n첫째는 월급, 둘째는 주식 배당, 셋째는 직접 운영하는 카페 수익.\n\n이 세 사람의 \'소득 안정성\'에 대해 당신의 생각에 가장 가까운 것은?',
+  { id:"P2-03", axis:2, subaxis:"breadth", randomize:true, type:"tag_only", prompt:'당신이 매월 받는 소득(또는 사업 수익)을 관리하는 방식에 가장 가까운 것은?',
     choices:[
-      {label:"A", text:"\"셋 중에선 월급이 가장 예측 가능하다 — 매달 들어오는 금액이 정해져 있으니까.\"", score:2},
-      {label:"B", text:"\"배당은 회사 실적에 따라 변동이 크다 — 작년에 받은 만큼 올해도 받는다는 보장이 없다.\"", score:3},
-      {label:"C", text:"\"카페 수익은 매출에서 비용을 빼고 남는 거라 — 매달 들쑥날쑥할 가능성이 가장 높다.\"", score:3},
-      {label:"D", text:"\"결국 다 자기 일을 안 하면 끊긴다 — 본인이 죽거나 아프면 다 멈춘다.\"", score:2},
-      {label:"E", text:"\"이 셋의 차이를 생각해본 적이 없다.\"", score:0}
+      {label:"A", text:"월급통장에 모이고 자동이체로 빠져나간 후 남은 돈을 쓴다", tag:"자연흐름형", score:0},
+      {label:"B", text:"월급일에 자동으로 여러 통장에 분산해두고 통장별로 사용한다", tag:"시스템형", score:0},
+      {label:"C", text:"매월 다르지만, 큰 흐름(수입·지출·잔고)을 가계부나 앱으로 추적한다", tag:"추적형", score:0},
+      {label:"D", text:"본인 소득이 어디서 들어오는지 종류별(월급·부수입·투자수익 등)로 구분해 관리한다", tag:"구분형", score:0},
+      {label:"E", text:"정확히 의식하지 않아도 큰 그림은 머릿속에 있다", tag:"직관형", score:0}
     ]},
-  { id:"P2-04", axis:2, prompt:'연봉 5,000만원인 사람과 월 300만원의 투자 수익이 있는 사람이 있습니다.\n이 둘이 10년 뒤 자산 규모에서 차이가 날까요?',
+  { id:"P2-04", axis:2, subaxis:"breadth", randomize:true, type:"tag_only", prompt:'"경제적 자유에 가까워졌다"고 본인이 느낄 만한 상태는?',
     choices:[
-      {label:"A", text:"\"차이는 소득보다 저축률에서 더 크게 결정된다 — 둘 다 절반을 쓴다면 결과는 비슷할 것이다.\"", score:3},
-      {label:"B", text:"\"투자 수익이 재투자될 경우 복리 효과로 둘째가 유리해질 수 있다 — 다만 연 수익률 가정이 중요하다.\"", score:3},
-      {label:"C", text:"\"연봉이 더 높은 첫째가 더 많은 자산을 모을 가능성이 크다 — 소득이 많을수록 모을 여력도 크니까.\"", score:2},
-      {label:"D", text:"\"둘은 거의 같은 자산을 모을 것이다 — 연봉 5천만은 월 약 416만원이고 투자 수익 300만원과 비슷하니까.\"", score:1},
-      {label:"E", text:"\"이런 비교를 생각해본 적이 없다.\"", score:0}
+      {label:"A", text:"통장 잔고가 일정 수준 이상 항상 유지되는 상태", tag:"잔고중심", score:0},
+      {label:"B", text:"매월 들어오는 돈이 매월 나가는 돈보다 충분히 많은 상태", tag:"현금흐름중심", score:0},
+      {label:"C", text:"일을 일주일 안 해도 생활에 지장 없는 상태", tag:"시간자율성중심", score:0},
+      {label:"D", text:"원하는 것을 살 때 가격을 보지 않아도 되는 상태", tag:"소비자율성중심", score:0},
+      {label:"E", text:"가족이 어떤 상황이 와도 안전한 상태", tag:"보호중심", score:0}
     ]},
-  { id:"P2-05", axis:2, prompt:'두 사람이 같은 금액을 매달 투자합니다.\n첫째는 25살에 시작해서 35살에 넣는 걸 멈췄고(10년간),\n이후 한 푼도 넣지 않고 그대로 두었습니다.\n둘째는 35살에 시작해서 65살까지 계속했습니다(30년간).\n\n65살이 됐을 때, 누가 더 많을까요?',
+  { id:"P2-05", axis:2, subaxis:"breadth", randomize:true, type:"objective_gfc",
+    prompt:'복리 효과에 대한 두 진술이 있습니다.\n\nA. 연 5% 수익률로 30년 투자하면 원금의 약 2배가 된다\nB. 연 5% 수익률로 30년 투자하면 원금의 약 4배 이상이 된다\n\n당신의 직관에 가까운 것은?',
     choices:[
-      {label:"A", text:"당연히 둘째 — 30년이 10년의 세 배니까", score:1},
-      {label:"B", text:"둘째가 많겠지만 차이는 생각보다 작을 것이다", score:2},
-      {label:"C", text:"비슷하거나 오히려 첫째가 많을 수도 있다", score:3},
-      {label:"D", text:"잘 모르겠다", score:0}
+      {label:"A", text:"B 진술이 명확히 맞다", score:4},
+      {label:"B", text:"B 진술이 약간 더 맞는 것 같다", score:3},
+      {label:"C", text:"둘 다 비슷하거나 잘 모르겠다", score:1},
+      {label:"D", text:"A 진술이 약간 더 맞는 것 같다", score:2},
+      {label:"E", text:"A 진술이 명확히 맞다", score:1}
     ]},
-  { id:"P2-06", axis:2, prompt:'1,000만원을 투자하려고 합니다.\n당신의 판단에 가장 가까운 것은?',
+  { id:"P2-06", axis:2, subaxis:"breadth", randomize:true, type:"objective_gfc",
+    prompt:'분산투자에 대한 두 진술이 있습니다.\n\nA. 종목 5~6개에 나눠 투자하면 그것이 분산투자다\nB. 종목 수보다, 자산군(주식·채권·부동산·현금)과 지역(국내·해외) 분산이 더 본질적이다\n\n(일반 개인 투자자 기준) 당신의 판단에 가까운 것은?',
     choices:[
-      {label:"A", text:"확신이 있는 한 종목에 집중하는 게 낫다", score:2},
-      {label:"B", text:"여러 종목에 나누는 게 무조건 안전하다", score:1},
-      {label:"C", text:"나누더라도 어떤 종목으로 나누느냐가 더 중요하다", score:3},
-      {label:"D", text:"투자 경험이 없어서 판단하기 어렵다", score:0}
+      {label:"A", text:"B 진술이 명확히 맞다", score:4},
+      {label:"B", text:"B 진술이 약간 더 맞는 것 같다", score:3},
+      {label:"C", text:"둘 다 비슷하거나 상황에 따라 다르다", score:2},
+      {label:"D", text:"A 진술이 약간 더 맞는 것 같다", score:2},
+      {label:"E", text:"A 진술이 명확히 맞다", score:1}
     ]},
-  { id:"P2-08", axis:2, prompt:'같은 분야에서 첫째는 고객을 직접 만나 하루 최대 5명을 상담하고,\n둘째는 온라인 강의를 만들어 수강생 제한 없이 판매합니다.\n\n5년 뒤, 누가 더 성공했을까요?',
+  { id:"P2-08", axis:2, subaxis:"breadth", randomize:true, type:"scenario_inference",
+    scenario:'친구가 이렇게 말합니다.\n\n"5년간 모은 5천만원으로 카페를 시작하려고 해. 모자라는 1억은 사업자대출(연 5%)로 받을 거야. 동네에 비슷한 카페가 없어서 잘 될 것 같아. 1년 안에 본전 회복 가능할 것 같은데."',
+    prompt:'친구의 계획에서 가장 먼저 따져볼 만한 것은?',
     choices:[
-      {label:"A", text:"첫째 — 직접 만나야 신뢰가 쌓이고 입소문이 난다", score:2},
-      {label:"B", text:"둘째 — 한 번 만든 강의가 계속 팔리니까 수익이 쌓인다", score:3},
-      {label:"C", text:"콘텐츠 품질과 마케팅에 달렸지, 방식만으로는 모른다", score:2},
-      {label:"D", text:"이런 차이를 생각해본 적 없다", score:0}
+      {label:"A", text:"1억 대출 이자가 매월 얼마인지(월 약 42만원), 그게 매출에서 나올 수 있는지", score:3},
+      {label:"B", text:"동네에 비슷한 카페가 없는 진짜 이유 — 수요가 없을 가능성", score:3},
+      {label:"C", text:"본전 회복 후의 시나리오 — 매출이 안 나오면 5천만원 + 1억을 어디까지 잃을 각오인가", score:4},
+      {label:"D", text:"매출 예측의 근거 — '잘 될 것 같다'의 데이터는 무엇인가", score:2},
+      {label:"E", text:"본인이 매일 카페에서 일할 수 있는지, 못 하게 되면 누가 운영하는지", score:2}
     ]},
-  { id:"P2-07", axis:2, prompt:'은행 예금 금리가 연 4%이고, 물가 상승률이 연 3%입니다.\n1,000만원을 1년간 예금에 넣어두면,\n1년 뒤 이 돈으로 살 수 있는 것은?',
+  { id:"P2-07", axis:2, subaxis:"breadth", randomize:true, type:"objective_gfc",
+    prompt:'현금 보관에 대한 두 진술이 있습니다.\n\nA. 현금을 그대로 보관하면 가치가 그대로 유지된다\nB. 현금은 장기적 관점에서 인플레이션과 세금을 고려하면 매년 가치가 조금씩 떨어진다\n\n당신의 판단에 가까운 것은?',
     choices:[
-      {label:"A", text:"이자가 붙으니 지금보다 더 많은 것을 살 수 있다", score:2},
-      {label:"B", text:"금리가 물가보다 높으니 조금 이득이지만, 세금을 빼면 거의 비슷하다", score:3},
-      {label:"C", text:"은행에 넣어두는 게 가장 안전한 방법이다", score:1},
-      {label:"D", text:"이런 계산을 해본 적 없다", score:0}
+      {label:"A", text:"B 진술이 명확히 맞다", score:4},
+      {label:"B", text:"B 진술이 약간 더 맞는 것 같다", score:3},
+      {label:"C", text:"둘 다 비슷하거나 잘 모르겠다", score:1},
+      {label:"D", text:"A 진술이 약간 더 맞는 것 같다", score:2},
+      {label:"E", text:"A 진술이 명확히 맞다", score:1}
     ]},
-  { id:"P2-09", axis:2, prompt:'친구 두 명이 각각 사업을 시작한 지 1년이 됐습니다.\n첫째는 "매달 매출이 꽤 나와"라고 하고,\n둘째는 "아직 매출은 작지만, 매달 남는 돈이 생겨"라고 합니다.\n\n1년 뒤, 누가 더 유리한 위치에 있을까요?',
+  { id:"P2-09", axis:2, subaxis:"breadth", randomize:true, type:"objective_gfc",
+    prompt:'사업 성공 판단에 대한 두 진술이 있습니다.\n\nA. 사업의 성공은 매출이 얼마나 빨리 늘어나는지로 판단한다\nB. 사업의 성공은 현금흐름(들어오는 돈 - 나가는 돈)이 안정적인지로 판단한다\n\n당신의 판단에 가까운 것은?',
     choices:[
-      {label:"A", text:"매출이 큰 첫째 — 규모가 크면 기회가 많다", score:2},
-      {label:"B", text:"남는 돈이 있는 둘째 — 실제로 돈이 쌓이고 있으니까", score:3},
-      {label:"C", text:"더 많은 정보가 필요하다 — 매출 크기나 비용 구조를 모르면 판단할 수 없다", score:3},
-      {label:"D", text:"사업은 해봐야 안다 — 1년으로는 판단하기 어렵다", score:1}
+      {label:"A", text:"B 진술이 명확히 맞다", score:4},
+      {label:"B", text:"B 진술이 약간 더 맞는 것 같다", score:3},
+      {label:"C", text:"단계별로 적합한 지표가 다르다 (둘 다 일리 있다)", score:2},
+      {label:"D", text:"A 진술이 약간 더 맞는 것 같다", score:2},
+      {label:"E", text:"A 진술이 명확히 맞다", score:1}
+    ]},
+
+  // 축 2 깊이 (앎-깊이) — 5점 리커트 신규 4문항 (v11)
+  // 출현 순서: P2-D1 → P2-D2 → P2-D3 → P2-D4 (P2-09 직후)
+  { id:"P2-D1", axis:2, subaxis:"depth", randomize:false, type:"likert_5",
+    prompt:'"자산은 돈을 만들어주는 것, 부채는 돈을 빼앗아 가는 것"이라는 구분이 있습니다.\n당신은 이 개념을 어떻게 활용하십니까?',
+    choices:[
+      {label:"A", text:"처음 듣는 개념이다 / 잘 모르겠다", score:1},
+      {label:"B", text:"들어본 적은 있지만 내 삶에 적용해본 적은 없다", score:2},
+      {label:"C", text:"한두 번 큰 결정에서 이 기준으로 판단해본 적 있다", score:3},
+      {label:"D", text:"차·집·구독 서비스 등 주요 지출에서 이 기준으로 종종 결정한다", score:4},
+      {label:"E", text:"거의 모든 지출 결정의 기본 틀이며, 친구에게 5분간 예시로 설명할 수 있다", score:5}
+    ]},
+  { id:"P2-D2", axis:2, subaxis:"depth", randomize:false, type:"likert_5",
+    prompt:'복리(시간이 가치를 키우는 효과)의 개념이 있습니다.\n당신은 이 개념을 어떻게 활용하십니까?',
+    choices:[
+      {label:"A", text:"처음 듣는 개념이다 / 잘 모르겠다", score:1},
+      {label:"B", text:"들어본 적은 있지만 내 삶에 적용해본 적은 없다", score:2},
+      {label:"C", text:"한두 번 적금/투자 결정에서 의식해본 적 있다", score:3},
+      {label:"D", text:"저축·투자·자기계발 결정 시 종종 복리 효과를 계산한다", score:4},
+      {label:"E", text:"일상의 작은 결정(독서·운동·관계)에도 복리 사고를 적용하며, 가족에게 설명할 수 있다", score:5}
+    ]},
+  { id:"P2-D3", axis:2, subaxis:"depth", randomize:false, type:"likert_5",
+    prompt:'분산투자(자산군·지역 분산)의 개념이 있습니다.\n당신은 이 개념을 어떻게 활용하십니까?',
+    choices:[
+      {label:"A", text:"처음 듣는 개념이다 / 잘 모르겠다", score:1},
+      {label:"B", text:"알지만 실제 내 자산 구성은 한 자산군에 집중되어 있다", score:2},
+      {label:"C", text:"두 가지 자산군 정도로 나눠두고 있다", score:3},
+      {label:"D", text:"자산군·지역을 의식해 분산되어 있고, 정기적으로 점검한다", score:4},
+      {label:"E", text:"분산 비율을 본인 나이·목표에 맞게 설계했고, 다른 사람에게 설명할 수 있다", score:5}
+    ]},
+  { id:"P2-D4", axis:2, subaxis:"depth", randomize:false, type:"likert_5",
+    prompt:'본인의 소득 구조(시간 의존성·다양성·지속성)를 점검·설계한 경험이 있습니까?',
+    choices:[
+      {label:"A", text:"처음 듣는 개념이다 / 잘 모르겠다", score:1},
+      {label:"B", text:"들어본 적은 있지만 내 소득 구조에 적용해본 적은 없다", score:2},
+      {label:"C", text:"본인의 소득이 어떤 구조인지 한 번 분석해본 적 있다", score:3},
+      {label:"D", text:"본인·가족의 소득 구조를 정기적으로 점검한다", score:4},
+      {label:"E", text:"본인 소득 구조를 시간에 따라 점차 다양화·자동화하는 구체적 계획이 있고, 진행 중이다", score:5}
     ]},
 
   // 축 3 (경험) — 출현 순서: P3-01 → P3-03 → P3-02 → P3-04 → P3-05 → P3-06 → P3-07 → P3-08
-  { id:"P3-01", axis:3, prompt:'예상치 못한 돈이 들어왔습니다. 평소 월 수입의 절반 정도 되는 금액입니다.\n\n가장 먼저 떠오르는 생각에 가까운 것은?',
-    choices:[
-      {label:"A", text:"갖고 싶었던 것을 살 수 있겠다", tag:"소비"},
-      {label:"B", text:"일단 통장에 넣어두고 나중에 생각해야겠다", tag:"저축"},
-      {label:"C", text:"대출이나 할부를 줄일 수 있겠다", tag:"부채감소"},
-      {label:"D", text:"투자에 넣을 수 있겠다", tag:"투자"},
-      {label:"E", text:"딱히 떠오르는 게 없다 — 그냥 통장에 있겠지", tag:"무관심"}
+  // 사실확인 + 빈도 2단계. P3-01·02·04·06·07·08 점수 산출 (각 max 3) = max 18, P3-03·05 분류 태그
+  { id:"P3-01", axis:3, randomize:false, type:"fact_then_frequency",
+    step1_prompt:'지난 12개월 동안 매월 저축 또는 부채 원금 상환을 한 적이 있다.',
+    step1_choices:[
+      {label:"Y", text:"예", proceed_to_step2:true},
+      {label:"N", text:"아니오", score:0, skip_step2:true}
+    ],
+    step2_prompt:'지난 12개월 평균 월 (저축 + 부채 원금 상환) 비율은? (세후 월 소득 대비)',
+    step2_choices:[
+      {label:"A", text:"0%", score:0},
+      {label:"B", text:"1~10%", score:1},
+      {label:"C", text:"11~25%", score:2},
+      {label:"D", text:"26~50%", score:3},
+      {label:"E", text:"51% 이상", score:3}
     ]},
-  { id:"P3-03", axis:3, randomize:true, prompt:'투자(주식, 부동산, 코인, 펀드 등) 경험이 있으신가요?',
-    choices:[
-      {label:"A", text:"해보고 싶지만 아직 시작하지 못했다", score:1},
-      {label:"B", text:"1년 이상 꾸준히 하고 있다", score:4},
-      {label:"C", text:"해본 적은 있지만 지금은 하고 있지 않다", score:2},
-      {label:"D", text:"아직 해본 적 없다", score:0},
-      {label:"E", text:"현재 하고 있다 — 시작한 지 1년 미만", score:3}
+  { id:"P3-03", axis:3, randomize:false, type:"fact_then_frequency",
+    scoring:false, tag_only:true,
+    step1_prompt:'지난 12개월 동안 본인의 성장(독서·강의·코칭·운동·관계 등)에 돈을 쓴 적이 있다.',
+    step1_choices:[
+      {label:"Y", text:"예", proceed_to_step2:true},
+      {label:"N", text:"아니오", score:0, skip_step2:true}
+    ],
+    step2_prompt:'지난 12개월 자기 투자 총액은?',
+    step2_choices:[
+      {label:"A", text:"1만원 미만", tag:"미시작", score:0},
+      {label:"B", text:"1~10만원", tag:"소액", score:0},
+      {label:"C", text:"11~50만원", tag:"중간", score:0},
+      {label:"D", text:"51~200만원", tag:"적극", score:0},
+      {label:"E", text:"201만원 이상", tag:"전폭", score:0}
     ]},
-  { id:"P3-02", axis:3, prompt:'이번 달 예상치 못한 지출이 생겼습니다. 냉장고가 고장 나서 새로 사야 합니다.\n\n당신의 첫 반응에 가장 가까운 것은?',
-    choices:[
-      {label:"A", text:"카드로 일단 결제한다 — 다음 달에 생각하지 뭐", tag:"후불"},
-      {label:"B", text:"당장은 어렵다 — 할부를 알아봐야 한다", tag:"할부"},
-      {label:"C", text:"부담되지만 저축한 돈에서 꺼내 쓴다", tag:"저축인출"},
-      {label:"D", text:"비상금으로 따로 모아둔 돈이 있어서 거기서 쓴다", tag:"비상금"},
-      {label:"E", text:"크게 고민되지 않는다 — 이 정도는 여유가 있다", tag:"여유"}
+  { id:"P3-02", axis:3, randomize:false, type:"fact_then_frequency",
+    step1_prompt:'비상금(예상치 못한 큰 지출에 대비한 별도 자금)을 의도적으로 따로 두고 관리하고 있다.',
+    step1_choices:[
+      {label:"Y", text:"예", proceed_to_step2:true},
+      {label:"N", text:"아니오", score:0, skip_step2:true}
+    ],
+    step2_prompt:'비상금이 본인 기준 \'몇 개월치 생활비\'에 해당하는가?',
+    step2_choices:[
+      {label:"A", text:"비상금 개념 자체를 두지 않음", score:0},
+      {label:"B", text:"1개월치 미만", score:1},
+      {label:"C", text:"1~3개월치", score:2},
+      {label:"D", text:"3~6개월치", score:3},
+      {label:"E", text:"6개월치 이상", score:3}
     ]},
-  { id:"P3-04", axis:3, prompt:'돈과 관련해서 계획대로 되지 않은 경험을 떠올려보세요.\n저축이 깨졌거나, 예상 밖의 큰 지출이 생겼거나, 투자에서 손실을 본 경우 등.\n\n그때 당신의 반응에 가장 가까운 것은?',
-    choices:[
-      {label:"A", text:"당분간 돈 생각을 피했다", score:1},
-      {label:"B", text:"원인을 찾아봤지만, 당장은 방법을 바꾸지 않았다", score:2},
-      {label:"C", text:"방법을 바꿨다 — 지출, 저축, 투자 방식 중 하나를 조정했다", score:3},
-      {label:"D", text:"원래 방향을 유지했다 — 일시적인 일이라 판단했다", score:3},
-      {label:"E", text:"이런 경험이 아직 없다 — 계획을 세운 적이 없어서", score:0}
+  { id:"P3-04", axis:3, randomize:false, type:"fact_then_frequency",
+    step1_prompt:'지난 12개월 동안 예상치 못한 돈(상여금, 명절 보너스, 환급금 등)을 받은 적이 있다.',
+    step1_choices:[
+      {label:"Y", text:"예", proceed_to_step2:true},
+      {label:"N", text:"아니오", score:0, skip_step2:true}
+    ],
+    step2_prompt:'그중 가장 큰 금액을 받았을 때 어떻게 하셨나요?',
+    step2_choices:[
+      {label:"A", text:"갖고 싶었던 것을 사거나 가족과 좋은 시간을 보내는 데 모두 사용했다", score:1},
+      {label:"B", text:"일부는 사용하고 일부는 통장에 두었다", score:2},
+      {label:"C", text:"절반 이상을 저축 또는 부채 상환에 사용했다", score:3},
+      {label:"D", text:"절반 이상을 투자 또는 자기 성장에 사용했다", score:3}
     ]},
-  { id:"P3-05", axis:3, prompt:'돈이나 경제에 대해 더 알고 싶다는 생각이 들었을 때,\n실제로 한 행동에 가장 가까운 것은?',
-    choices:[
-      {label:"A", text:"아직 그런 생각이 들어본 적 없다", tag:"미시작"},
-      {label:"B", text:"유튜브나 SNS에서 관련 내용을 찾아본다", tag:"콘텐츠"},
-      {label:"C", text:"책을 읽거나, 강의를 듣거나, 스터디에 참여한 적 있다", tag:"체계적"},
-      {label:"D", text:"이미 하고 있는 사람을 찾아가서 물어본다", tag:"관계기반"}
+  { id:"P3-05", axis:3, randomize:false, type:"fact_then_frequency",
+    scoring:false, tag_only:true,
+    step1_prompt:'지난 12개월 동안 가족·중요한 관계에 의도적으로 시간이나 돈을 투자한 적이 있다.',
+    step1_choices:[
+      {label:"Y", text:"예", proceed_to_step2:true},
+      {label:"N", text:"아니오", score:0, skip_step2:true}
+    ],
+    step2_prompt:'가장 의도적으로 한 행동에 가장 가까운 것은?',
+    step2_choices:[
+      {label:"A", text:"가족 여행이나 가족 식사를 의도적으로 마련했다", tag:"가족시간", score:0},
+      {label:"B", text:"멘토·친구와 정기적으로 만남을 가졌다", tag:"멘토관계", score:0},
+      {label:"C", text:"부모님께 정기적으로 안부·관심을 표현했다", tag:"부모님", score:0},
+      {label:"D", text:"새로운 사람을 만나는 모임이나 커뮤니티에 참여했다", tag:"새관계", score:0}
     ]},
-  { id:"P3-06", axis:3, randomize:true, prompt:'경제적 목표를 구체적으로 세워본 적이 있나요?',
-    choices:[
-      {label:"A", text:"구체적 목표를 세우고 달성한 적이 있다", score:3},
-      {label:"B", text:"구체적으로 세워본 적 없다", score:0},
-      {label:"C", text:"목표를 세우고 실행하는 것이 습관이 되어 있다", score:4},
-      {label:"D", text:'"돈을 모아야지" 정도로 막연하게 생각한 적은 있다', score:1},
-      {label:"E", text:"구체적 금액이나 기간을 정한 적 있지만 지키지 못했다", score:2}
+  { id:"P3-06", axis:3, randomize:false, type:"fact_then_frequency",
+    step1_prompt:'지난 12개월 동안 본인 명의로 주식·펀드·ETF·채권·부동산·암호화폐 중 하나 이상에 직접 투자한 적이 있다.',
+    step1_choices:[
+      {label:"Y", text:"예", proceed_to_step2:true},
+      {label:"N", text:"아니오", score:0, skip_step2:true}
+    ],
+    step2_prompt:'투자한 자산 종류 수는?',
+    step2_choices:[
+      {label:"A", text:"1종류", score:1},
+      {label:"B", text:"2~3종류", score:2},
+      {label:"C", text:"4종류 이상", score:3}
     ]},
-  { id:"P3-07", axis:3, prompt:'"이대로는 안 되겠다"고 느낀 적이 있나요?\n돈과 관련해서 그런 순간이 있었다면,\n그 뒤에 실제로 한 것에 가장 가까운 것은?',
-    choices:[
-      {label:"A", text:"그런 생각이 든 적 없다 — 지금 방식에 큰 불만이 없다", score:1},
-      {label:"B", text:"그렇게 느꼈지만 결국 달라진 건 없다", score:2},
-      {label:"C", text:"소비 습관이나 저축 방식을 바꿨다", score:3},
-      {label:"D", text:"새로운 소득원이나 투자를 시작했다", score:3},
-      {label:"E", text:"여러 번 바꿔왔다 — 시행착오를 거치며 계속 조정 중이다", score:4}
+  { id:"P3-07", axis:3, randomize:false, type:"fact_then_frequency",
+    step1_prompt:'투자 자산이 매수가 대비 20% 이상 하락한 경험이 있다.',
+    step1_choices:[
+      {label:"Y", text:"예", proceed_to_step2:true},
+      {label:"N", text:"아니오", score:0, skip_step2:true}
+    ],
+    step2_prompt:'그때 어떻게 대응하셨나요?',
+    step2_choices:[
+      {label:"A", text:"두려움에 즉흥적으로 손절매했다 (감정적)", score:1},
+      {label:"B", text:"그냥 두고 보고 있었다 (수동적)", score:2},
+      {label:"C", text:"사전에 정한 손절선 따라 손절매 또는 추가 매수 (계획적)", score:3},
+      {label:"D", text:"다른 자산으로 분산을 더 강화하거나 비중 조정 (전략적)", score:3}
     ]},
-  { id:"P3-08", axis:3, prompt:'주변 사람이 투자나 사업으로 큰 돈을 벌었다는 이야기를 들었을 때,\n실제로 한 행동에 가장 가까운 것은?',
-    choices:[
-      {label:"A", text:"특별히 한 것이 없다 — 이야기를 듣고 넘겼다", tag:"무행동"},
-      {label:"B", text:"관심이 생겨서 검색하거나 알아봤지만 실행하지는 않았다", tag:"탐색"},
-      {label:"C", text:"자극을 받아서 실제로 뭔가를 시작했다", tag:"실행"},
-      {label:"D", text:"그 사람에게 직접 물어보거나 조언을 구했다", tag:"관계행동"},
-      {label:"E", text:"그런 이야기를 들어본 적이 없다", tag:"미경험"}
+  { id:"P3-08", axis:3, randomize:false, type:"fact_then_frequency",
+    step1_prompt:'지난 12개월 동안 새로 시작한 습관이나 도전이 있다.',
+    step1_choices:[
+      {label:"Y", text:"예", proceed_to_step2:true},
+      {label:"N", text:"아니오", score:0, skip_step2:true}
+    ],
+    step2_prompt:'그중 가장 오래 지속한 것의 기간은?',
+    step2_choices:[
+      {label:"A", text:"1주 미만", score:0},
+      {label:"B", text:"1~4주", score:1},
+      {label:"C", text:"1~3개월", score:2},
+      {label:"D", text:"4~6개월", score:3},
+      {label:"E", text:"6개월 이상", score:3}
     ]},
 
   // 축 4 (독서·학습) — 출현 순서: P4-01 → P4-02 → P4-03 → P4-04 → P4-05 → P4-06 → P4-07
