@@ -923,22 +923,22 @@ const questions = [
       {label:"E", text:"본인이 이루고 싶은 큰 목표를 위한 체계적 학습 계획의 일부로 봤다", score:3}
     ]},
   { id:"P4-02", axis:4, randomize:false, type:"frequency_step", scoring:true,
-    prompt:'지난 3개월 동안, 책·강의·콘텐츠를 본 후 다음 중 한 행동이라도 한 적이 있나요?',
+    prompt:'지난 3개월 동안, 책·강의·콘텐츠를 본 후 어떻게 하셨나요?\n가장 가까운 것 하나만 골라주세요.',
     choices:[
-      {label:"A", text:"거의 없음", score:0},
-      {label:"B", text:"다른 사람에게 핵심 내용 이야기해본 적 1~2회", score:1},
-      {label:"C", text:"정리·메모로 남긴 적 3~5회", score:2},
-      {label:"D", text:"한두 가지를 실제로 적용해본 적 6~10회", score:3},
-      {label:"E", text:"적용해본 후 그 결과를 따로 기록하거나 다시 점검한 적 있다", score:3}
+      {label:"A", text:"읽고 끝났다 — 별도로 한 행동은 거의 없다", score:0},
+      {label:"B", text:"인상 깊은 내용을 가끔 다른 사람에게 이야기해본 적 있다", score:1},
+      {label:"C", text:"중요하다고 느낀 부분을 정리하거나 메모로 남긴 적 있다", score:2},
+      {label:"D", text:"읽은 내용 중 한두 가지를 실제 행동으로 옮겨본 적 있다", score:3},
+      {label:"E", text:"행동으로 옮긴 결과를 따로 기록하거나 다시 점검한 적 있다", score:3}
     ]},
   { id:"P4-03", axis:4, randomize:false, type:"frequency_step", scoring:true,
     prompt:'지난 1년 동안, 같은 주제에 대해 정반대 주장을 하는 두 자료(책·기사·영상)를 모두 본 적이 있나요?',
     choices:[
       {label:"A", text:"의도적으로 본 적 없음", score:0},
-      {label:"B", text:"1~2번 우연히", score:1},
-      {label:"C", text:"3~5번, 의도적으로 비교하기 위해", score:2},
-      {label:"D", text:"6~10번, 의도적으로 + 본인 결론 정리", score:3},
-      {label:"E", text:"11번 이상, 정기적인 학습 습관임", score:3}
+      {label:"B", text:"우연히 한두 번 본 적 있다", score:1},
+      {label:"C", text:"가끔 의도적으로 비교하려고 양쪽을 본다", score:2},
+      {label:"D", text:"종종 양쪽을 비교한 뒤 본인 결론까지 정리한다", score:3},
+      {label:"E", text:"양쪽 관점을 비교하는 게 평소 학습 방식이다", score:3}
     ]},
   { id:"P4-04", axis:4, randomize:false, type:"frequency_step", scoring:true,
     prompt:'지난 6개월 동안, 한 분야의 책·콘텐츠에서 배운 것을 다른 분야에 적용해본 적이 있나요?\n예: 경제 책의 분산 원칙을 인간관계에 적용 / 자기계발 책의 습관 원칙을 사업에 적용 등',
