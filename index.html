@@ -825,61 +825,68 @@ const questions = [
     ]},
 
   // 축 4 (독서·학습) — 출현 순서: P4-01 → P4-02 → P4-03 → P4-04 → P4-05 → P4-06 → P4-07
-  { id:"P4-01", axis:4, prompt:'경제 관련 책이나 콘텐츠를 처음 접하게 된 계기에 가장 가까운 것은?',
+  { id:"P4-01", axis:4, randomize:false, type:"frequency_step", scoring:true,
+    prompt:'지난 1년 동안 본인이 가장 많이 책·강의·콘텐츠를 본 분야는?',
     choices:[
-      {label:"A", text:"주변 사람이 추천하거나 화제가 돼서", tag:"외부추천"},
-      {label:"B", text:"돈 문제가 생겨서 방법을 찾다가", tag:"문제해결"},
-      {label:"C", text:"목표를 세우면서 필요하다고 느껴서", tag:"목표기반"},
-      {label:"D", text:"평소에 이런 내용을 찾아보는 편이라", tag:"자발적"},
-      {label:"E", text:"아직 접해본 적이 없다", tag:"미시작"}
+      {label:"A", text:"이 분야의 콘텐츠를 거의 보지 않았다", score:0},
+      {label:"B", text:"누군가 추천했거나 트렌드라서 봤다", score:1},
+      {label:"C", text:"막연한 호기심에서 봤다", score:2},
+      {label:"D", text:"구체적 문제·고민이 있어서 답을 찾으려 봤다", score:3},
+      {label:"E", text:"본인이 이루고 싶은 큰 목표를 위한 체계적 학습 계획의 일부로 봤다", score:3}
     ]},
-  { id:"P4-02", axis:4, prompt:'좋은 책(또는 콘텐츠)을 읽었습니다.\n읽고 난 뒤에 실제로 한 것에 가장 가까운 것은?',
+  { id:"P4-02", axis:4, randomize:false, type:"frequency_step", scoring:true,
+    prompt:'지난 3개월 동안, 책·강의·콘텐츠를 본 후 다음 중 한 행동이라도 한 적이 있나요?',
     choices:[
-      {label:"A", text:"좋았다는 느낌은 있지만, 특별히 한 것은 없다", score:1},
-      {label:"B", text:"인상 깊었던 내용을 주변 사람에게 이야기했다", score:2},
-      {label:"C", text:"읽은 내용을 바탕으로 뭔가를 실행해봤다", score:3},
-      {label:"D", text:"읽은 내용을 정리하거나 메모해두고 다시 볼 수 있게 했다", score:3},
-      {label:"E", text:"책이나 콘텐츠를 거의 보지 않는다", score:0}
+      {label:"A", text:"거의 없음", score:0},
+      {label:"B", text:"다른 사람에게 핵심 내용 이야기해본 적 1~2회", score:1},
+      {label:"C", text:"정리·메모로 남긴 적 3~5회", score:2},
+      {label:"D", text:"한두 가지를 실제로 적용해본 적 6~10회", score:3},
+      {label:"E", text:"적용해본 후 그 결과를 따로 기록하거나 다시 점검한 적 있다", score:3}
     ]},
-  { id:"P4-03", axis:4, prompt:'책이나 콘텐츠에서 정반대 주장을 본 적이 있을 겁니다.\n예를 들어 한 책은 "집중 투자가 답이다", 다른 책은 "반드시 분산해야 한다"고 한다거나.\n\n이런 경우, 당신이 마지막으로 한 행동에 가장 가까운 것은?',
+  { id:"P4-03", axis:4, randomize:false, type:"frequency_step", scoring:true,
+    prompt:'지난 1년 동안, 같은 주제에 대해 정반대 주장을 하는 두 자료(책·기사·영상)를 모두 본 적이 있나요?',
     choices:[
-      {label:"A", text:"\"둘 다 머릿속에 남았지만, 어느 쪽이 맞다고 결론 내리진 않았다.\"", score:2},
-      {label:"B", text:"\"내 상황과 더 가까운 쪽을 골라 그쪽으로 결정했다.\"", score:3},
-      {label:"C", text:"\"두 저자의 근거나 배경을 더 찾아본 적이 있다.\"", score:3},
-      {label:"D", text:"\"마지막에 본 쪽 의견이 더 옳게 느껴졌다.\"", score:1},
-      {label:"E", text:"\"정반대 주장을 비교해서 본 적은 없다.\"", score:0}
+      {label:"A", text:"의도적으로 본 적 없음", score:0},
+      {label:"B", text:"1~2번 우연히", score:1},
+      {label:"C", text:"3~5번, 의도적으로 비교하기 위해", score:2},
+      {label:"D", text:"6~10번, 의도적으로 + 본인 결론 정리", score:3},
+      {label:"E", text:"11번 이상, 정기적인 학습 습관임", score:3}
     ]},
-  { id:"P4-04", axis:4, prompt:'책이나 콘텐츠를 보다가 \'아, 이거 전에 다른 책에서 봤던 거랑 비슷하네\' 싶은 순간이 있을 겁니다.\n가장 최근에 그런 순간이 있었을 때, 당신이 실제로 한 것에 가장 가까운 것은?',
+  { id:"P4-04", axis:4, randomize:false, type:"frequency_step", scoring:true,
+    prompt:'지난 6개월 동안, 한 분야의 책·콘텐츠에서 배운 것을 다른 분야에 적용해본 적이 있나요?\n예: 경제 책의 분산 원칙을 인간관계에 적용 / 자기계발 책의 습관 원칙을 사업에 적용 등',
     choices:[
-      {label:"A", text:"\"그 순간 잠깐 인지했지만, 곧 잊혀졌다.\"", score:2},
-      {label:"B", text:"\"주변 사람과 대화에서 그 연결을 이야기한 적이 있다.\"", score:3},
-      {label:"C", text:"\"노트나 메모에 그 연결을 남긴 적이 있다.\"", score:3},
-      {label:"D", text:"\"최근에 그런 연결을 떠올린 기억이 잘 나지 않는다.\"", score:1},
-      {label:"E", text:"\"여러 분야 책을 보지는 않는다.\"", score:0}
+      {label:"A", text:"그런 적 없음", score:0},
+      {label:"B", text:"어쩌다 한두 번 떠올라본 정도", score:1},
+      {label:"C", text:"의식적으로 시도해본 적 1~3번", score:2},
+      {label:"D", text:"종종 의식적으로 적용함", score:3},
+      {label:"E", text:"여러 분야 책을 읽다 보면 자연스럽게 연결되는 경험이 자주 있다", score:3}
     ]},
-  { id:"P4-05", axis:4, randomize:true, prompt:'1년 전에 본 책이나 콘텐츠를 떠올려보세요.\n지금 그 내용에 대해 당신이 할 수 있는 가장 정확한 진술에 가까운 것은?',
+  { id:"P4-05", axis:4, randomize:false, type:"frequency_step", scoring:true,
+    prompt:'1년 전에 읽은 책 중에서, 지금도 본인의 의사결정에 영향을 미치는 책이 있나요?',
     choices:[
-      {label:"A", text:"\"제목과 대략적인 주제는 기억나지만, 구체적 내용은 흐릿하다.\"", score:2},
-      {label:"B", text:"\"인상 깊었던 문장이나 개념 한두 가지가 지금도 떠오른다.\"", score:3},
-      {label:"C", text:"\"그때 결심하고 시작한 행동 중 지금까지 이어지고 있는 것이 있다.\"", score:4},
-      {label:"D", text:"\"솔직히 무엇을 봤는지조차 잘 기억나지 않는다.\"", score:1},
-      {label:"E", text:"\"1년 전에 본 것이 없다.\"", score:0}
+      {label:"A", text:"1년 전 책 자체를 거의 기억 못 함", score:0},
+      {label:"B", text:"책은 기억나지만 의사결정에 영향은 없음", score:1},
+      {label:"C", text:"1권의 책에서 한두 문장이 기준이 됨", score:2},
+      {label:"D", text:"2~3권의 책에서 핵심 원칙들이 결합되어 영향", score:3},
+      {label:"E", text:"여러 책에서 배운 것들이 어느 순간 한 흐름처럼 느껴진 경험 있다", score:3}
     ]},
-  { id:"P4-06", axis:4, prompt:'6개월 전에 좋은 책(또는 콘텐츠)을 봤습니다.\n지금 그 내용에 대해 어떤 상태인가요?',
+  { id:"P4-06", axis:4, randomize:false, type:"frequency_step", scoring:true,
+    prompt:'지난 1년 동안 정기적으로 학습 활동(독서·강의·코칭 등)을 한 빈도는?',
     choices:[
-      {label:"A", text:"읽었다는 것은 기억나지만 내용은 흐릿하다", score:1},
-      {label:"B", text:"필요한 부분이 생기면 다시 찾아볼 것이다", score:2},
-      {label:"C", text:"가끔 떠올리거나 다시 펼쳐본 적 있다", score:2},
-      {label:"D", text:"그 내용을 바탕으로 다른 책이나 자료를 더 찾아봤다", score:3},
-      {label:"E", text:"6개월 전에 본 것이 없다", score:0}
+      {label:"A", text:"거의 안 함", score:0},
+      {label:"B", text:"가끔", score:1},
+      {label:"C", text:"월 1~2회 정도", score:2},
+      {label:"D", text:"주 1회 이상, 1년 내내", score:3},
+      {label:"E", text:"매일 학습 시간이 정해져 있음", score:3}
     ]},
-  { id:"P4-07", axis:4, prompt:'경제적 자유에 대해 주변 사람과 대화할 때,\n당신의 위치에 가장 가까운 것은?',
+  { id:"P4-07", axis:4, randomize:false, type:"tag_only",
+    prompt:'"학습 능력으로 보면 나는 100명 중 어디 정도라고 생각하십니까?"',
     choices:[
-      {label:"A", text:"듣는 쪽이다 — 다른 사람들이 더 잘 아는 것 같다", tag:"초보"},
-      {label:"B", text:"기본적인 대화는 하지만 깊은 이야기는 어렵다", tag:"기본"},
-      {label:"C", text:"내 의견을 말할 수 있고 때로는 조언도 한다", tag:"중급"},
-      {label:"D", text:"대화를 이끌거나 가르쳐줄 수 있는 수준이다", tag:"전문"},
-      {label:"E", text:"주변에 이런 대화를 하는 사람이 없다", tag:"고립"}
+      {label:"A", text:"상위 10% — 또래보다 훨씬 잘 학습한다", tag:"상위10", score:0},
+      {label:"B", text:"상위 30% 정도 — 평균보다는 위", tag:"상위30", score:0},
+      {label:"C", text:"50% 정도 — 평균", tag:"평균", score:0},
+      {label:"D", text:"하위 30% — 평균보다 낮다", tag:"하위30", score:0},
+      {label:"E", text:"비교해본 적이 없어 모르겠다", tag:"미비교", score:0}
     ]}
 ];
 
