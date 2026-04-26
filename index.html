@@ -883,7 +883,7 @@ const GRADE_LABEL = { 5:"깊은 단계", 4:"성숙 단계", 3:"성장 단계", 2
 /* ===================== 상태 ===================== */
 const STORAGE_KEY = 'bridge_freedom_diagnosis';
 let state = {
-  version: 1,
+  version: 2,
   startTime: Date.now(),
   currentQuestion: 0,
   answers: {},
@@ -902,7 +902,7 @@ function load() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)); } 
 function reset() { localStorage.removeItem(STORAGE_KEY); }
 function shuffleArr(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); const el=document.getElementById(id); el.classList.add('active'); window.scrollTo(0,0); }
-function getGrade(score, max){ const r = score/max; if(r>=0.95) return 5; if(r>=0.82) return 4; if(r>=0.65) return 3; if(r>=0.45) return 2; return 1; }
+function getGrade(score, max){ const r = score/max; if(r>=0.90) return 5; if(r>=0.75) return 4; if(r>=0.55) return 3; if(r>=0.35) return 2; return 1; }
 function trackEvent(name, params={}){ if (typeof gtag !== 'undefined') gtag('event', name, params); }
 
 /* ===================== 플로우 ===================== */
@@ -1023,19 +1023,53 @@ function nextAfterAxisTransition(){
 function computeScores(){
   const a = state.answers;
   const get = id => (a[id]?.score ?? 0);
-  const axis1Score = get("P1-01") + get("P1-06") + get("P1-08");
-  const axis2Score = ["P2-01","P2-02","P2-03","P2-04","P2-05","P2-06","P2-07","P2-08","P2-09"].reduce((s,id)=>s+get(id),0);
-  const axis3Score = get("P3-03") + get("P3-04") + get("P3-06") + get("P3-07");
-  const axis4Score = get("P4-02") + get("P4-03") + get("P4-04") + get("P4-05") + get("P4-06");
 
-  const g1 = getGrade(axis1Score, 12);
-  const g2 = getGrade(axis2Score, 27);
-  const g3 = getGrade(axis3Score, 15);
-  const g4 = getGrade(axis4Score, 16);
+  // 축1 (믿음): P1-04(max 3) + P1-07(max 4) = 7점 만점
+  const axis1Score = get("P1-04") + get("P1-07");
+
+  // 축2 폭 (앎-폭): GFC 4문항(max 16) + 시나리오 추론 2문항(max 8) = 24점
+  // P2-01·03·04는 분류 태그 (score 0, 합산해도 영향 없음)
+  const axis2Breadth =
+    get("P2-05") + get("P2-06") + get("P2-07") + get("P2-09") +  // GFC 16점
+    get("P2-02") + get("P2-08");                                   // 시나리오 8점
+
+  // 축2 깊이 (앎-깊이): 5점 리커트 4문항 = 20점 만점
+  const axis2Depth =
+    get("P2-D1") + get("P2-D2") + get("P2-D3") + get("P2-D4");
+
+  // 축3 (경험): P3-01·02·04·06·07·08 (각 max 3) = 18점
+  // P3-03·05는 분류 태그
+  const axis3Score =
+    get("P3-01") + get("P3-02") + get("P3-04") +
+    get("P3-06") + get("P3-07") + get("P3-08");
+
+  // 축4 (학습): P4-01~06 (각 max 3) = 18점
+  // P4-07은 분류 태그
+  const axis4Score =
+    get("P4-01") + get("P4-02") + get("P4-03") +
+    get("P4-04") + get("P4-05") + get("P4-06");
+
+  // 등급 산출
+  const g1 = getGrade(axis1Score, 7);
+  const g2_breadth = getGrade(axis2Breadth, 24);
+  const g2_depth   = getGrade(axis2Depth, 20);
+  // 축2 종합 등급은 가중 평균(60:40)으로 산출 후 등급 변환
+  const axis2CombinedPct = (axis2Breadth / 24) * 0.6 + (axis2Depth / 20) * 0.4;
+  const g2 = (axis2CombinedPct >= 0.90) ? 5
+           : (axis2CombinedPct >= 0.75) ? 4
+           : (axis2CombinedPct >= 0.55) ? 3
+           : (axis2CombinedPct >= 0.35) ? 2 : 1;
+  const g3 = getGrade(axis3Score, 18);
+  const g4 = getGrade(axis4Score, 18);
 
   return {
-    scores:{axis1Score,axis2Score,axis3Score,axis4Score},
-    grades:{g1,g2,g3,g4}
+    scores: {
+      axis1Score,
+      axis2Breadth, axis2Depth,
+      axis2Score: axis2Breadth + axis2Depth,
+      axis3Score, axis4Score
+    },
+    grades: { g1, g2, g2_breadth, g2_depth, g3, g4 }
   };
 }
 
