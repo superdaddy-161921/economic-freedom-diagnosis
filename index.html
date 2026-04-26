@@ -690,13 +690,13 @@ const questions = [
     ]},
   { id:"P2-02", axis:2, subaxis:"breadth", randomize:true, type:"scenario_inference",
     scenario:'두 사람이 비슷한 자산을 가지고 있습니다.\n\n■ 김 부장 (45세, 자산 5억)\n- 대기업 임원, 연봉 1억 5천\n- 5억은 모두 본인 명의 아파트와 적금\n- 매년 안정적 인상\n\n■ 박 사장 (45세, 자산 5억)\n- 본인 카페 운영, 월 순이익 700만원\n- 5억은 가게 인테리어·운영 자금·아파트 전세금 분산\n- 본인 매일 출근해 운영',
-    prompt:'5년 후 두 사람의 \'자유의 질\'은 어떻게 될 것 같습니까?',
+    prompt:'5년 후 두 사람 중 누가 더 \'자유롭게\' 살고 있을 것 같습니까?',
     choices:[
-      {label:"A", text:"김 부장이 더 자유에 가까워질 것 — 연봉 인상으로 자본 형성 가속", score:1},
-      {label:"B", text:"박 사장이 더 자유에 가까워질 것 — 사업 시스템화 가능성", score:1},
-      {label:"C", text:"둘 다 비슷할 것 — 둘 다 본인 시간 의존도 높음", score:2},
-      {label:"D", text:"둘 다 5년 전보다 자유의 질이 떨어질 가능성 — 의존 누적", score:3},
-      {label:"E", text:"시간 자율성을 어떻게 만들어가느냐에 따라 갈림 — 행동 의존", score:4}
+      {label:"A", text:"김 부장 — 연봉이 계속 오르니까 돈이 더 모일 것이다", score:1},
+      {label:"B", text:"박 사장 — 사업이 잘 굴러가면 본인이 안 가도 될 수 있다", score:1},
+      {label:"C", text:"둘 다 비슷하다 — 둘 다 본인이 일을 안 하면 돈이 끊긴다", score:2},
+      {label:"D", text:"둘 다 5년 전보다 더 힘들어질 수 있다 — 회사·가게에 묶이는 시간이 늘어날 테니까", score:3},
+      {label:"E", text:"본인 없이도 돈이 들어오게 만드느냐 아니냐에 따라 달라진다", score:4}
     ]},
   { id:"P2-03", axis:2, subaxis:"breadth", randomize:true, type:"tag_only", prompt:'당신이 매월 받는 소득(또는 사업 수익)을 관리하는 방식에 가장 가까운 것은?',
     choices:[
@@ -734,13 +734,13 @@ const questions = [
     ]},
   { id:"P2-08", axis:2, subaxis:"breadth", randomize:true, type:"scenario_inference",
     scenario:'친구가 이렇게 말합니다.\n\n"5년간 모은 5천만원으로 카페를 시작하려고 해. 모자라는 1억은 사업자대출(연 5%)로 받을 거야. 동네에 비슷한 카페가 없어서 잘 될 것 같아. 1년 안에 본전 회복 가능할 것 같은데."',
-    prompt:'친구의 계획에서 가장 먼저 따져볼 만한 것은?',
+    prompt:'친구의 계획에서 가장 먼저 짚어줄 만한 것은?',
     choices:[
-      {label:"A", text:"1억 대출 이자가 매월 얼마인지(월 약 42만원), 그게 매출에서 나올 수 있는지", score:3},
-      {label:"B", text:"동네에 비슷한 카페가 없는 진짜 이유 — 수요가 없을 가능성", score:3},
-      {label:"C", text:"본전 회복 후의 시나리오 — 매출이 안 나오면 5천만원 + 1억을 어디까지 잃을 각오인가", score:4},
-      {label:"D", text:"매출 예측의 근거 — '잘 될 것 같다'의 데이터는 무엇인가", score:2},
-      {label:"E", text:"본인이 매일 카페에서 일할 수 있는지, 못 하게 되면 누가 운영하는지", score:2}
+      {label:"A", text:"매월 대출 이자가 약 42만원인데, 그게 카페 매출로 충분히 나올 수 있는지", score:3},
+      {label:"B", text:"동네에 비슷한 카페가 없는 진짜 이유 — 손님이 별로 없어서일 수도 있다", score:3},
+      {label:"C", text:"잘 안 됐을 때의 각오 — 5천만원 + 1억을 어디까지 잃어도 괜찮은지", score:4},
+      {label:"D", text:"\"잘 될 것 같다\"는 느낌이 어디서 온 건지 — 근거가 있는지", score:2},
+      {label:"E", text:"매일 본인이 카페에 나갈 수 있는지, 못 가게 되면 누가 대신 볼지", score:2}
     ]},
   { id:"P2-07", axis:2, subaxis:"breadth", randomize:true, type:"objective_gfc",
     prompt:'현금 보관에 대한 두 진술이 있습니다.\n\nA. 현금을 그대로 보관하면 가치가 그대로 유지된다\nB. 현금은 장기적 관점에서 인플레이션과 세금을 고려하면 매년 가치가 조금씩 떨어진다\n\n당신의 판단에 가까운 것은?',
