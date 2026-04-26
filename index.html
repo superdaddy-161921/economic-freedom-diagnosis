@@ -1194,20 +1194,36 @@ function computeScores(){
   };
 }
 
-function classifyType(g1,g2,g3,g4){
-  if (g1<=2 && g2<=2 && g3<=2 && g4<=2) return "starter";
-  const arr=[g1,g2,g3,g4]; const mn=Math.min(...arr); const mx=Math.max(...arr);
-  if (mn>=4 && (mx-mn)<=1) return "balanced";
-  if ((g1>=3 || g2>=3) && g3<=2) {
-    if (g4>=3) return "bookworm";
-    return "knower";
-  }
-  if (g3>=3 && (g1<=2 || g2<=2)) return "doer";
-  if (g1>=4 && g2<=2 && g3<=2) return "visionary";
-  if (g4>=3 && g3<=2) return "bookworm";
-  const gpe = Math.abs(g1-g3); const gke = Math.abs(g2-g3);
-  if (gpe >= gke) return g1>g3 ? "knower" : "doer";
-  return g2>g3 ? "knower" : "doer";
+function classifyType(g1, g2, g3, g4, g2_breadth, g2_depth){
+  // 우선순위 1: voyager (자기 언어로 걷는 사람) — 4축 모두 4 이상 + 균형
+  const arr = [g1, g2, g3, g4];
+  const mn = Math.min(...arr);
+  const mx = Math.max(...arr);
+  if (mn >= 4 && (mx - mn) <= 1) return "voyager";
+
+  // 우선순위 2: shifter (깊이로 옮겨가는 사람) — 부적 케이스
+  // 폭(앎-폭) 4단계 이상이면서 깊이(앎-깊이)가 2단계 이하인 경우
+  if (g2_breadth >= 4 && g2_depth <= 2) return "shifter";
+
+  // 우선순위 3: gateway (문 앞에 선 사람) — 4축 모두 2 이하
+  if (g1 <= 2 && g2 <= 2 && g3 <= 2 && g4 <= 2) return "gateway";
+
+  // 우선순위 4: dreamer (비전을 그리는 사람) — 인식 강함, 앎·경험 약함
+  if (g1 >= 4 && g2 <= 2 && g3 <= 2) return "dreamer";
+
+  // 우선순위 5: walker (몸으로 배우는 사람) — 경험 강함, 앎 약함
+  if (g3 >= 3 && g2 <= 2) return "walker";
+
+  // 우선순위 6: reader (배움을 사랑하는 사람) — 학습 강함, 경험 약함
+  if (g4 >= 4 && g3 <= 2) return "reader";
+
+  // 우선순위 7: bridge (앎에서 행동으로 가는 사람) — 인식·앎 ≥ 3, 경험 ≤ 2
+  if ((g1 >= 3 || g2 >= 3) && g3 <= 2) return "bridge";
+
+  // Fallback: 가장 가까운 유형 추정
+  if (g3 < g1 || g3 < g2) return "bridge";
+  if (g4 < g3) return "walker";
+  return "bridge";
 }
 
 /* ===================== 인사이트 브레이크 ===================== */
